@@ -1,0 +1,136 @@
+import pandas as pd # pandas install 
+
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from sklearn.model_selection import train_test_split
+
+# Load data
+# Load the Titanic dataset from a CSV file.
+
+df = pd.read_csv("data.csv")
+
+### Explanation
+This line reads the **data.csv** file and stores it in a Pandas DataFrame called **df**.
+
+# Print only the Age column
+
+print(df["Age"])
+
+### Explanation
+This displays every value from the **Age** column.
+
+# Handle Missing Values  
+# Replace missing Age values with the average age.
+df["Age"] = df["Age"].fillna(df["Age"].mean())
+
+# Replace missing Cabin values with "unknown".
+df["Cabin"] = df["Cabin"].fillna("unknown")
+
+### Explanation
+Cleaning missing data improves data quality.
+- Missing **Age** values are replaced with the average age.
+- Missing **Cabin** values are replaced with **"unknown"**.
+
+# Encoding
+# Create a LabelEncoder object.
+le = LabelEncoder()
+
+# Convert the Sex column into numeric values.
+df["Sex"] = le.fit_transform(df["Sex"])
+
+### Explanation
+Machine Learning models work with numbers instead of text.
+Example:
+
+| Original | Encoded |
+|----------|---------|
+| male | 1 |
+| female | 0 |
+
+# Convert datatype
+# Convert the Survived column to integer type.
+
+df["Survived"] = df["Survived"].astype(int)
+
+### Explanation
+This ensures the **Survived** column contains integer values.
+
+# Scaling
+# Scale Age and Parch values between -1 and 1.
+
+scaler = MinMaxScaler(feature_range=(-1, 1))
+df[["Age", "Parch"]] = scaler.fit_transform(df[["Age", "Parch"]])
+
+### Explanation
+Feature scaling helps Machine Learning models learn more efficiently.
+The values in **Age** and **Parch** are transformed into a range from **-1 to 1**.
+
+# Features and labels
+# Select input features.
+X = df[["Age", "Pclass", "Sex", "Fare", "Parch"]]
+
+### Explanation
+**Features (X)** are used to train the model.
+- Age
+- Pclass
+- Sex
+- Fare
+- Parch
+**Target (y)** is the value the model will predict.
+- Survived
+
+# Select the target column.
+# Split the dataset into training and testing data.
+y = df["Survived"]
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+### Explanation
+The dataset is divided into two parts:
+- **80%** for training
+- **20%** for testing
+Using **random_state=42** makes the split reproducible.
+
+
+# Save to CSV
+# Save the cleaned dataset as a new CSV file.
+
+### Explanation
+This creates a new CSV file containing the processed data.
+
+The row numbers are not included because **index=False**.
+df.to_csv("dates_titanic.csv", index=False)
+
+import os
+# Display the full path of the saved CSV file.
+print(os.path.abspath("dates_titanic.csv"))
+
+### Explanation
+This prints the complete file path so you can easily locate the saved dataset on your computer.
+
+# Summary
+
+This project performs the following data preprocessing steps:
+
+- Import required libraries
+- Load the Titanic dataset
+- Display the **Age** column
+- Handle missing values
+- Encode categorical data
+- Convert data types
+- Scale numerical features
+- Select features and target
+- Split the dataset into training and testing sets
+- Save the cleaned dataset
+- Display the saved file location
+
+These preprocessing steps prepare the dataset for building accurate and reliable Machine Learning models.
+
+
+
+
+
+
+
