@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titanic Dataset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #0A1522;
+    --navy-deep: #050B12;
+    --ivory: #F6F1E4;
+    --ivory-dim: #ECE4D2;
+    --brass: #C9A961;
+    --brass-bright: #E4C989;
+    --brass-dark: #8C6D3F;
+    --oxblood: #6B2C3E;
+    --sea: #24444E;
+    --ink: #1B2430;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:'Jost', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+  }
+  .display{font-family:'Cormorant Garamond', serif;}
+  .manifest{font-family:'Special Elite', cursive;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 75% 40%, rgba(201,169,97,0.08), transparent 55%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:var(--ivory);
+    display:flex;
+    align-items:center;
+    padding: 6vw 7vw;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(180deg, transparent 0 58px, rgba(201,169,97,0.035) 58px 59px);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:relative;
+    z-index:2;
+    width:100%;
+    display:grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap:4vw;
+    align-items:center;
+  }
+  .eyebrow{
+    font-family:'Special Elite', cursive;
+    letter-spacing:0.28em;
+    font-size:0.72rem;
+    color:var(--brass-bright);
+    text-transform:uppercase;
+    margin-bottom:1.6rem;
+    display:flex;
+    align-items:center;
+    gap:0.9rem;
+  }
+  .eyebrow::before{
+    content:"";
+    width:34px; height:1px;
+    background:var(--brass);
+    display:inline-block;
+  }
+  h1.title{
+    font-size:clamp(3.2rem, 8vw, 6.4rem);
+    line-height:0.95;
+    font-weight:500;
+    letter-spacing:0.01em;
+    background:linear-gradient(180deg, var(--ivory) 0%, var(--brass-bright) 120%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .subtitle{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(1.3rem,2.4vw,1.9rem);
+    color:var(--ivory-dim);
+    margin-top:0.4rem;
+    letter-spacing:0.02em;
+  }
+  .hero-desc{
+    max-width:36ch;
+    margin-top:1.8rem;
+    font-size:0.98rem;
+    line-height:1.7;
+    color:rgba(246,241,228,0.68);
+  }
+  .manifest-line{
+    margin-top:2.6rem;
+    font-family:'Special Elite', cursive;
+    font-size:0.78rem;
+    letter-spacing:0.06em;
+    color:var(--brass);
+    border-top:1px solid rgba(201,169,97,0.3);
+    padding-top:1rem;
+    display:flex;
+    gap:2rem;
+    flex-wrap:wrap;
+  }
+
+  /* Porthole component */
+  .porthole-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .porthole-hero{ width:min(340px, 100%); }
+  svg.ring{ transform:rotate(-90deg); overflow:visible; }
+  .ring-track{ fill:none; stroke:rgba(255,255,255,0.08); }
+  .ring-progress{ fill:none; stroke-linecap:round; transition:stroke-dashoffset 1.4s cubic-bezier(.2,.7,.2,1); }
+  .porthole-rivets circle{ fill:var(--brass-dark); }
+  .porthole-glass{ fill:url(#glassGradHero); }
+  .porthole-center{
+    position:absolute;
+    text-align:center;
+  }
+  .porthole-center .pct{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:2.6rem;
+    color:var(--ivory);
+    display:block;
+  }
+  .porthole-center .lbl{
+    font-family:'Special Elite', cursive;
+    font-size:0.62rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--brass-bright);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{
+    padding:5.5rem 7vw;
+  }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:1.2rem;
+    margin-bottom:3rem;
+    flex-wrap:wrap;
+  }
+  .section-num{
+    font-family:'Special Elite', cursive;
+    color:var(--brass-dark);
+    font-size:0.85rem;
+  }
+  h2.section-title{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(1.9rem, 3.4vw, 2.7rem);
+    color:var(--ink);
+  }
+  .section-sub{
+    font-family:'Jost',sans-serif;
+    font-weight:300;
+    color:#6b6252;
+    font-size:0.95rem;
+    max-width:52ch;
+  }
+
+  .porthole-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:2.2rem;
+  }
+  .porthole-card{
+    background:linear-gradient(180deg, #FFFDF8, var(--ivory-dim));
+    border:1px solid rgba(140,109,63,0.18);
+    border-radius:6px;
+    padding:2.4rem 1.6rem 2rem;
+    text-align:center;
+    transition:transform .35s ease, box-shadow .35s ease;
+  }
+  .porthole-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 40px -18px rgba(27,36,48,0.35);
+  }
+  .porthole-mini{ width:150px; margin:0 auto 1.2rem; position:relative; }
+  .porthole-card .pct{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:2rem;
+    color:var(--ink);
+    display:block;
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  }
+  .card-label{
+    font-family:'Special Elite', cursive;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--brass-dark);
+    margin-top:0.5rem;
+  }
+  .card-detail{
+    font-size:0.85rem;
+    color:#7a7261;
+    margin-top:0.35rem;
+  }
+
+  /* fare strip */
+  .fare-strip{
+    background:var(--navy);
+    color:var(--ivory);
+    border-radius:6px;
+    padding:3rem 2.5rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .fare-strip::before{
+    content:"";
+    position:absolute; inset:0;
+    background:repeating-linear-gradient(90deg, rgba(201,169,97,0.06) 0 2px, transparent 2px 46px);
+  }
+  .fare-title{
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.5rem;
+    margin-bottom:2rem;
+    position:relative; z-index:2;
+  }
+  .fare-track{
+    position:relative;
+    height:3px;
+    background:rgba(255,255,255,0.15);
+    margin:2.4rem 0.5rem 3.2rem;
+    z-index:2;
+  }
+  .fare-tick{
+    position:absolute;
+    top:-6px;
+    width:1px; height:14px;
+    background:var(--brass);
+  }
+  .fare-point{
+    position:absolute;
+    top:-9px;
+    width:20px; height:20px;
+    border-radius:50%;
+    border:2px solid var(--brass-bright);
+    background:var(--navy);
+    transform:translateX(-50%);
+  }
+  .fare-point.avg{ background:var(--brass-bright); }
+  .fare-labels{
+    position:relative; z-index:2;
+    display:flex;
+    justify-content:space-between;
+    font-family:'Special Elite', cursive;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    color:var(--brass);
+  }
+  .fare-cap{ position:absolute; top:14px; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-size:1.25rem; color:var(--ivory); white-space:nowrap; }
+
+  /* bars: class & sex breakdown table */
+  .manifest-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.92rem;
+  }
+  .manifest-table th{
+    text-align:left;
+    font-family:'Special Elite', cursive;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--brass-dark);
+    padding-bottom:1rem;
+    border-bottom:1px solid rgba(140,109,63,0.3);
+  }
+  .manifest-table td{
+    padding:1.1rem 0.6rem;
+    border-bottom:1px solid rgba(140,109,63,0.15);
+    vertical-align:middle;
+  }
+  .bar-bg{
+    background:rgba(107,44,62,0.12);
+    border-radius:3px;
+    height:10px;
+    width:100%;
+    overflow:hidden;
+    position:relative;
+  }
+  .bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--brass-dark), var(--brass-bright));
+    border-radius:3px;
+    width:0;
+    transition:width 1.2s ease;
+  }
+
+  footer{
+    background:var(--navy-deep);
+    color:rgba(246,241,228,0.55);
+    text-align:center;
+    padding:2.4rem 2rem;
+    font-family:'Special Elite', cursive;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+  }
+  footer span{ color:var(--brass); }
+
+  /* ---------- LEDGER / FILTERABLE TABLE ---------- */
+  .ledger{
+    background:var(--navy);
+    color:var(--ivory);
+    border-radius:6px;
+    padding:2.6rem 2.2rem 1.2rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .ledger::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:repeating-linear-gradient(180deg, transparent 0 58px, rgba(201,169,97,0.03) 58px 59px);
+    pointer-events:none;
+  }
+  .filter-bar{
+    position:relative; z-index:2;
+    display:flex;
+    flex-wrap:wrap;
+    gap:2rem;
+    align-items:flex-end;
+    margin-bottom:1.8rem;
+    padding-bottom:1.8rem;
+    border-bottom:1px solid rgba(201,169,97,0.25);
+  }
+  .filter-group{ display:flex; flex-direction:column; gap:0.6rem; }
+  .filter-label{
+    font-family:'Special Elite', cursive;
+    font-size:0.62rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--brass);
+  }
+  .pill-row{ display:flex; gap:0.5rem; flex-wrap:wrap; }
+  .pill{
+    font-family:'Jost', sans-serif;
+    font-size:0.82rem;
+    font-weight:400;
+    color:var(--ivory-dim);
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(201,169,97,0.35);
+    border-radius:999px;
+    padding:0.42rem 1.05rem;
+    cursor:pointer;
+    transition:all .25s ease;
+    user-select:none;
+  }
+  .pill:hover{ border-color:var(--brass-bright); color:var(--ivory); }
+  .pill.active{
+    background:linear-gradient(135deg, var(--brass-bright), var(--brass-dark));
+    color:var(--navy-deep);
+    border-color:transparent;
+    font-weight:500;
+  }
+  .reset-btn{
+    font-family:'Special Elite', cursive;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--oxblood);
+    background:var(--ivory);
+    border:none;
+    border-radius:4px;
+    padding:0.6rem 1.2rem;
+    cursor:pointer;
+    height:fit-content;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .reset-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 18px -8px rgba(0,0,0,0.5); }
+  .result-count{
+    position:relative; z-index:2;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.05rem;
+    color:var(--brass-bright);
+    margin-bottom:1.2rem;
+  }
+  .result-count b{ font-style:normal; color:var(--ivory); }
+
+  .table-scroll{
+    position:relative; z-index:2;
+    overflow-x:auto;
+    border-radius:4px;
+  }
+  table.ledger-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.86rem;
+    min-width:760px;
+  }
+  .ledger-table thead th{
+    text-align:left;
+    font-family:'Special Elite', cursive;
+    font-size:0.64rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--brass);
+    padding:0.9rem 0.8rem;
+    border-bottom:1px solid rgba(201,169,97,0.35);
+    cursor:pointer;
+    white-space:nowrap;
+    position:sticky; top:0;
+    background:var(--navy);
+  }
+  .ledger-table thead th:hover{ color:var(--ivory); }
+  .ledger-table thead th .arrow{ opacity:0.4; margin-left:0.3rem; font-size:0.6rem; }
+  .ledger-table thead th.sorted .arrow{ opacity:1; color:var(--brass-bright); }
+  .ledger-table tbody td{
+    padding:0.85rem 0.8rem;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    color:rgba(246,241,228,0.85);
+    white-space:nowrap;
+  }
+  .ledger-table tbody tr:hover{ background:rgba(201,169,97,0.06); }
+  .ledger-table td.name-cell{ white-space:normal; min-width:220px; }
+  .tag{
+    display:inline-block;
+    padding:0.22rem 0.7rem;
+    border-radius:999px;
+    font-size:0.72rem;
+    font-family:'Jost', sans-serif;
+    font-weight:500;
+  }
+  .tag.survived{ background:rgba(201,169,97,0.18); color:var(--brass-bright); border:1px solid rgba(201,169,97,0.5); }
+  .tag.lost{ background:rgba(107,44,62,0.25); color:#D98CA0; border:1px solid rgba(107,44,62,0.6); }
+
+  .pagination{
+    position:relative; z-index:2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:1rem;
+    padding:1.6rem 0 0.6rem;
+    font-family:'Special Elite', cursive;
+    font-size:0.72rem;
+    letter-spacing:0.05em;
+    color:var(--brass);
+  }
+  .page-btn{
+    background:transparent;
+    border:1px solid rgba(201,169,97,0.35);
+    color:var(--ivory-dim);
+    border-radius:4px;
+    padding:0.4rem 0.8rem;
+    cursor:pointer;
+    font-family:'Jost', sans-serif;
+    font-size:0.8rem;
+    transition:all .2s ease;
+  }
+  .page-btn:hover:not(:disabled){ border-color:var(--brass-bright); color:var(--ivory); }
+  .page-btn:disabled{ opacity:0.3; cursor:not-allowed; }
+
+  .no-results{
+    position:relative; z-index:2;
+    text-align:center;
+    padding:3rem 1rem;
+    color:rgba(246,241,228,0.5);
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.1rem;
+  }
+
+  /* ---------- CHARTS ---------- */
+  .chart-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(360px, 1fr));
+    gap:1.8rem;
+  }
+  .chart-card{
+    background:linear-gradient(180deg, #FFFDF8, var(--ivory-dim));
+    border:1px solid rgba(140,109,63,0.18);
+    border-radius:6px;
+    padding:1.8rem 1.6rem 1.4rem;
+  }
+  .chart-card.wide{ grid-column:1 / -1; }
+  .chart-heading{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:1.25rem;
+    color:var(--ink);
+    margin-bottom:0.2rem;
+  }
+  .chart-note{
+    font-size:0.8rem;
+    color:#8a806c;
+    margin-bottom:1.1rem;
+  }
+  .chart-legend{
+    display:flex;
+    gap:1.4rem;
+    flex-wrap:wrap;
+    margin-top:0.8rem;
+    font-size:0.78rem;
+    color:#5b5344;
+  }
+  .legend-dot{
+    display:inline-block;
+    width:9px; height:9px;
+    border-radius:50%;
+    margin-right:0.45rem;
+  }
+  .axis-label{
+    font-family:'Special Elite', cursive;
+    font-size:0.6rem;
+    letter-spacing:0.06em;
+    fill:#8a806c;
+  }
+  .grid-line{ stroke:rgba(140,109,63,0.15); stroke-width:1; }
+  .bar-rect{ transition:opacity .2s ease; cursor:pointer; }
+  .bar-rect:hover{ opacity:0.75; }
+  .scatter-dot{ transition:r .15s ease; cursor:pointer; }
+  .scatter-dot:hover{ r:5; }
+  .chart-tooltip{
+    position:absolute;
+    pointer-events:none;
+    background:var(--navy);
+    color:var(--ivory);
+    font-family:'Jost', sans-serif;
+    font-size:0.75rem;
+    padding:0.4rem 0.7rem;
+    border-radius:4px;
+    border:1px solid var(--brass);
+    opacity:0;
+    transition:opacity .15s ease;
+    z-index:10;
+    white-space:nowrap;
+  }
+  .chart-wrap{ position:relative; }
+
+  @media (max-width:820px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .porthole-hero{ margin-top:2.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+
+  .fade-up{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .fade-up.in{ opacity:1; transform:none; }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">RMS Titanic &nbsp;·&nbsp; White Star Line &nbsp;·&nbsp; 1912</div>
+      <h1 class="title">Titanic</h1>
+      <div class="subtitle">Dataset</div>
+      <p class="hero-desc">A passenger manifest of 891 souls who boarded the maiden voyage — recorded by class, fare, sex, and port of embarkation, and by who lived to tell of it.</p>
+      <div class="manifest-line">
+        <span>No. Passengers: 891</span>
+        <span>Survived: 342</span>
+        <span>Lost: 549</span>
+      </div>
+    </div>
+
+    <div class="porthole-wrap porthole-hero">
+      <svg class="ring" width="100%" viewBox="0 0 260 260">
+        <defs>
+          <radialGradient id="glassGradHero" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#2E4652"/>
+            <stop offset="60%" stop-color="#122530"/>
+            <stop offset="100%" stop-color="#0A1620"/>
+          </radialGradient>
+          <linearGradient id="brassRing" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E4C989"/>
+            <stop offset="100%" stop-color="#8C6D3F"/>
+          </linearGradient>
+        </defs>
+        <circle class="porthole-glass" cx="130" cy="130" r="105"/>
+        <circle class="ring-track" cx="130" cy="130" r="110" stroke-width="6"/>
+        <circle class="ring-progress" id="heroRing" cx="130" cy="130" r="110" stroke-width="6"
+          stroke="url(#brassRing)"
+          stroke-dasharray="691.15"
+          stroke-dashoffset="691.15"/>
+        <circle cx="130" cy="130" r="118" fill="none" stroke="var(--brass-dark)" stroke-width="3" opacity="0.6"/>
+      </svg>
+      <div class="porthole-center">
+        <span class="pct">38.4%</span>
+        <span class="lbl">Survival Rate</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BY CLASS ============ -->
+<section id="class">
+  <div class="section-head fade-up">
+    <span class="section-num">01</span>
+    <div>
+      <h2 class="section-title">Fortune by Ticket Class</h2>
+      <p class="section-sub">First class held the boat decks; third class held the numbers. Survival tracked the fare paid almost exactly.</p>
+    </div>
+  </div>
+  <div class="porthole-row">
+    <div class="porthole-card fade-up">
+      <div class="porthole-mini">
+        <svg class="ring" width="100%" viewBox="0 0 170 170">
+          <circle class="ring-track" cx="85" cy="85" r="70" stroke-width="8"/>
+          <circle class="ring-progress mini" data-arc="277.09" cx="85" cy="85" r="70" stroke-width="8" stroke="#8C6D3F" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="pct">63%</span>
+      </div>
+      <div class="card-label">First Class</div>
+      <div class="card-detail">136 of 216 survived</div>
+    </div>
+    <div class="porthole-card fade-up">
+      <div class="porthole-mini">
+        <svg class="ring" width="100%" viewBox="0 0 170 170">
+          <circle class="ring-track" cx="85" cy="85" r="70" stroke-width="8"/>
+          <circle class="ring-progress mini" data-arc="208.04" cx="85" cy="85" r="70" stroke-width="8" stroke="#B08B4F" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="pct">47%</span>
+      </div>
+      <div class="card-label">Second Class</div>
+      <div class="card-detail">87 of 184 survived</div>
+    </div>
+    <div class="porthole-card fade-up">
+      <div class="porthole-mini">
+        <svg class="ring" width="100%" viewBox="0 0 170 170">
+          <circle class="ring-track" cx="85" cy="85" r="70" stroke-width="8"/>
+          <circle class="ring-progress mini" data-arc="106.44" cx="85" cy="85" r="70" stroke-width="8" stroke="#6B2C3E" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="pct">24%</span>
+      </div>
+      <div class="card-label">Third Class</div>
+      <div class="card-detail">119 of 491 survived</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BY SEX ============ -->
+<section id="sex" style="background:var(--ivory-dim);">
+  <div class="section-head fade-up">
+    <span class="section-num">02</span>
+    <div>
+      <h2 class="section-title">Women and Children First</h2>
+      <p class="section-sub">The order given on deck shows plainly in the manifest: women survived at nearly four times the rate of men.</p>
+    </div>
+  </div>
+  <div class="porthole-row" style="max-width:640px;">
+    <div class="porthole-card fade-up">
+      <div class="porthole-mini">
+        <svg class="ring" width="100%" viewBox="0 0 170 170">
+          <circle class="ring-track" cx="85" cy="85" r="70" stroke-width="8"/>
+          <circle class="ring-progress mini" data-arc="326.35" cx="85" cy="85" r="70" stroke-width="8" stroke="#C9A961" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="pct">74%</span>
+      </div>
+      <div class="card-label">Female</div>
+      <div class="card-detail">233 of 314 survived</div>
+    </div>
+    <div class="porthole-card fade-up">
+      <div class="porthole-mini">
+        <svg class="ring" width="100%" viewBox="0 0 170 170">
+          <circle class="ring-track" cx="85" cy="85" r="70" stroke-width="8"/>
+          <circle class="ring-progress mini" data-arc="83.13" cx="85" cy="85" r="70" stroke-width="8" stroke="#6B2C3E" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="pct">19%</span>
+      </div>
+      <div class="card-label">Male</div>
+      <div class="card-detail">109 of 577 survived</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BY PORT ============ -->
+<section id="port">
+  <div class="section-head fade-up">
+    <span class="section-num">03</span>
+    <div>
+      <h2 class="section-title">Port of Embarkation</h2>
+      <p class="section-sub">Most boarded at Southampton, but those who joined at Cherbourg — often first-class passengers — fared better.</p>
+    </div>
+  </div>
+  <div class="porthole-row">
+    <div class="porthole-card fade-up">
+      <div class="porthole-mini">
+        <svg class="ring" width="100%" viewBox="0 0 170 170">
+          <circle class="ring-track" cx="85" cy="85" r="70" stroke-width="8"/>
+          <circle class="ring-progress mini" data-arc="148.22" cx="85" cy="85" r="70" stroke-width="8" stroke="#8C6D3F" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="pct">34%</span>
+      </div>
+      <div class="card-label">Southampton</div>
+      <div class="card-detail">217 of 644 survived</div>
+    </div>
+    <div class="porthole-card fade-up">
+      <div class="porthole-mini">
+        <svg class="ring" width="100%" viewBox="0 0 170 170">
+          <circle class="ring-track" cx="85" cy="85" r="70" stroke-width="8"/>
+          <circle class="ring-progress mini" data-arc="243.66" cx="85" cy="85" r="70" stroke-width="8" stroke="#C9A961" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="pct">55%</span>
+      </div>
+      <div class="card-label">Cherbourg</div>
+      <div class="card-detail">93 of 168 survived</div>
+    </div>
+    <div class="porthole-card fade-up">
+      <div class="porthole-mini">
+        <svg class="ring" width="100%" viewBox="0 0 170 170">
+          <circle class="ring-track" cx="85" cy="85" r="70" stroke-width="8"/>
+          <circle class="ring-progress mini" data-arc="171.53" cx="85" cy="85" r="70" stroke-width="8" stroke="#B08B4F" stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+        </svg>
+        <span class="pct">39%</span>
+      </div>
+      <div class="card-label">Queenstown</div>
+      <div class="card-detail">30 of 77 survived</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FARE ============ -->
+<section style="background:var(--ivory-dim);">
+  <div class="section-head fade-up">
+    <span class="section-num">04</span>
+    <div>
+      <h2 class="section-title">The Price of Passage</h2>
+      <p class="section-sub">Fares ranged from nothing to a small fortune. The line below marks where each passenger sat on that scale.</p>
+    </div>
+  </div>
+  <div class="fare-strip fade-up">
+    <div class="fare-title">Fare Paid, in Pounds Sterling</div>
+    <div class="fare-track">
+      <span class="fare-cap" style="left:0%;">£0</span>
+      <span class="fare-point" style="left:0%;"></span>
+      <span class="fare-cap avg" style="left:6.3%; color:var(--brass-bright);">£32 avg</span>
+      <span class="fare-point avg" style="left:6.3%;"></span>
+      <span class="fare-cap" style="left:100%; transform:translateX(-100%);">£512 max</span>
+      <span class="fare-point" style="left:100%;"></span>
+    </div>
+    <div class="fare-labels">
+      <span>Steerage — free passage recorded</span>
+      <span>First class suites at the top of the ledger</span>
+    </div>
+  </div>
+</section>
+
+<script id="passengerData" type="application/json">[{"id": 1, "name": "Braund, Mr. Owen Harris", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 2, "name": "Cumings, Mrs. John Bradley (Florence Briggs Thayer)", "pclass": 1, "sex": "female", "age": 38.0, "fare": 71.28, "port": "Cherbourg", "survived": 1}, {"id": 3, "name": "Heikkinen, Miss. Laina", "pclass": 3, "sex": "female", "age": 26.0, "fare": 7.92, "port": "Southampton", "survived": 1}, {"id": 4, "name": "Futrelle, Mrs. Jacques Heath (Lily May Peel)", "pclass": 1, "sex": "female", "age": 35.0, "fare": 53.1, "port": "Southampton", "survived": 1}, {"id": 5, "name": "Allen, Mr. William Henry", "pclass": 3, "sex": "male", "age": 35.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 6, "name": "Moran, Mr. James", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.46, "port": "Queenstown", "survived": 0}, {"id": 7, "name": "McCarthy, Mr. Timothy J", "pclass": 1, "sex": "male", "age": 54.0, "fare": 51.86, "port": "Southampton", "survived": 0}, {"id": 8, "name": "Palsson, Master. Gosta Leonard", "pclass": 3, "sex": "male", "age": 2.0, "fare": 21.07, "port": "Southampton", "survived": 0}, {"id": 9, "name": "Johnson, Mrs. Oscar W (Elisabeth Vilhelmina Berg)", "pclass": 3, "sex": "female", "age": 27.0, "fare": 11.13, "port": "Southampton", "survived": 1}, {"id": 10, "name": "Nasser, Mrs. Nicholas (Adele Achem)", "pclass": 2, "sex": "female", "age": 14.0, "fare": 30.07, "port": "Cherbourg", "survived": 1}, {"id": 11, "name": "Sandstrom, Miss. Marguerite Rut", "pclass": 3, "sex": "female", "age": 4.0, "fare": 16.7, "port": "Southampton", "survived": 1}, {"id": 12, "name": "Bonnell, Miss. Elizabeth", "pclass": 1, "sex": "female", "age": 58.0, "fare": 26.55, "port": "Southampton", "survived": 1}, {"id": 13, "name": "Saundercock, Mr. William Henry", "pclass": 3, "sex": "male", "age": 20.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 14, "name": "Andersson, Mr. Anders Johan", "pclass": 3, "sex": "male", "age": 39.0, "fare": 31.27, "port": "Southampton", "survived": 0}, {"id": 15, "name": "Vestrom, Miss. Hulda Amanda Adolfina", "pclass": 3, "sex": "female", "age": 14.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 16, "name": "Hewlett, Mrs. (Mary D Kingcome) ", "pclass": 2, "sex": "female", "age": 55.0, "fare": 16.0, "port": "Southampton", "survived": 1}, {"id": 17, "name": "Rice, Master. Eugene", "pclass": 3, "sex": "male", "age": 2.0, "fare": 29.12, "port": "Queenstown", "survived": 0}, {"id": 18, "name": "Williams, Mr. Charles Eugene", "pclass": 2, "sex": "male", "age": 29.7, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 19, "name": "Vander Planke, Mrs. Julius (Emelia Maria Vandemoortele)", "pclass": 3, "sex": "female", "age": 31.0, "fare": 18.0, "port": "Southampton", "survived": 0}, {"id": 20, "name": "Masselmani, Mrs. Fatima", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.22, "port": "Cherbourg", "survived": 1}, {"id": 21, "name": "Fynney, Mr. Joseph J", "pclass": 2, "sex": "male", "age": 35.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 22, "name": "Beesley, Mr. Lawrence", "pclass": 2, "sex": "male", "age": 34.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 23, "name": "McGowan, Miss. Anna \"Annie\"", "pclass": 3, "sex": "female", "age": 15.0, "fare": 8.03, "port": "Queenstown", "survived": 1}, {"id": 24, "name": "Sloper, Mr. William Thompson", "pclass": 1, "sex": "male", "age": 28.0, "fare": 35.5, "port": "Southampton", "survived": 1}, {"id": 25, "name": "Palsson, Miss. Torborg Danira", "pclass": 3, "sex": "female", "age": 8.0, "fare": 21.07, "port": "Southampton", "survived": 0}, {"id": 26, "name": "Asplund, Mrs. Carl Oscar (Selma Augusta Emilia Johansson)", "pclass": 3, "sex": "female", "age": 38.0, "fare": 31.39, "port": "Southampton", "survived": 1}, {"id": 27, "name": "Emir, Mr. Farred Chehab", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 28, "name": "Fortune, Mr. Charles Alexander", "pclass": 1, "sex": "male", "age": 19.0, "fare": 263.0, "port": "Southampton", "survived": 0}, {"id": 29, "name": "O'Dwyer, Miss. Ellen \"Nellie\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.88, "port": "Queenstown", "survived": 1}, {"id": 30, "name": "Todoroff, Mr. Lalio", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 31, "name": "Uruchurtu, Don. Manuel E", "pclass": 1, "sex": "male", "age": 40.0, "fare": 27.72, "port": "Cherbourg", "survived": 0}, {"id": 32, "name": "Spencer, Mrs. William Augustus (Marie Eugenie)", "pclass": 1, "sex": "female", "age": 29.7, "fare": 146.52, "port": "Cherbourg", "survived": 1}, {"id": 33, "name": "Glynn, Miss. Mary Agatha", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 34, "name": "Wheadon, Mr. Edward H", "pclass": 2, "sex": "male", "age": 66.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 35, "name": "Meyer, Mr. Edgar Joseph", "pclass": 1, "sex": "male", "age": 28.0, "fare": 82.17, "port": "Cherbourg", "survived": 0}, {"id": 36, "name": "Holverson, Mr. Alexander Oskar", "pclass": 1, "sex": "male", "age": 42.0, "fare": 52.0, "port": "Southampton", "survived": 0}, {"id": 37, "name": "Mamee, Mr. Hanna", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.23, "port": "Cherbourg", "survived": 1}, {"id": 38, "name": "Cann, Mr. Ernest Charles", "pclass": 3, "sex": "male", "age": 21.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 39, "name": "Vander Planke, Miss. Augusta Maria", "pclass": 3, "sex": "female", "age": 18.0, "fare": 18.0, "port": "Southampton", "survived": 0}, {"id": 40, "name": "Nicola-Yarred, Miss. Jamila", "pclass": 3, "sex": "female", "age": 14.0, "fare": 11.24, "port": "Cherbourg", "survived": 1}, {"id": 41, "name": "Ahlin, Mrs. Johan (Johanna Persdotter Larsson)", "pclass": 3, "sex": "female", "age": 40.0, "fare": 9.47, "port": "Southampton", "survived": 0}, {"id": 42, "name": "Turpin, Mrs. William John Robert (Dorothy Ann Wonnacott)", "pclass": 2, "sex": "female", "age": 27.0, "fare": 21.0, "port": "Southampton", "survived": 0}, {"id": 43, "name": "Kraeff, Mr. Theodor", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Cherbourg", "survived": 0}, {"id": 44, "name": "Laroche, Miss. Simonne Marie Anne Andree", "pclass": 2, "sex": "female", "age": 3.0, "fare": 41.58, "port": "Cherbourg", "survived": 1}, {"id": 45, "name": "Devaney, Miss. Margaret Delia", "pclass": 3, "sex": "female", "age": 19.0, "fare": 7.88, "port": "Queenstown", "survived": 1}, {"id": 46, "name": "Rogers, Mr. William John", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 47, "name": "Lennon, Mr. Denis", "pclass": 3, "sex": "male", "age": 29.7, "fare": 15.5, "port": "Queenstown", "survived": 0}, {"id": 48, "name": "O'Driscoll, Miss. Bridget", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 49, "name": "Samaan, Mr. Youssef", "pclass": 3, "sex": "male", "age": 29.7, "fare": 21.68, "port": "Cherbourg", "survived": 0}, {"id": 50, "name": "Arnold-Franchi, Mrs. Josef (Josefine Franchi)", "pclass": 3, "sex": "female", "age": 18.0, "fare": 17.8, "port": "Southampton", "survived": 0}, {"id": 51, "name": "Panula, Master. Juha Niilo", "pclass": 3, "sex": "male", "age": 7.0, "fare": 39.69, "port": "Southampton", "survived": 0}, {"id": 52, "name": "Nosworthy, Mr. Richard Cater", "pclass": 3, "sex": "male", "age": 21.0, "fare": 7.8, "port": "Southampton", "survived": 0}, {"id": 53, "name": "Harper, Mrs. Henry Sleeper (Myna Haxtun)", "pclass": 1, "sex": "female", "age": 49.0, "fare": 76.73, "port": "Cherbourg", "survived": 1}, {"id": 54, "name": "Faunthorpe, Mrs. Lizzie (Elizabeth Anne Wilkinson)", "pclass": 2, "sex": "female", "age": 29.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 55, "name": "Ostby, Mr. Engelhart Cornelius", "pclass": 1, "sex": "male", "age": 65.0, "fare": 61.98, "port": "Cherbourg", "survived": 0}, {"id": 56, "name": "Woolner, Mr. Hugh", "pclass": 1, "sex": "male", "age": 29.7, "fare": 35.5, "port": "Southampton", "survived": 1}, {"id": 57, "name": "Rugg, Miss. Emily", "pclass": 2, "sex": "female", "age": 21.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 58, "name": "Novel, Mr. Mansouer", "pclass": 3, "sex": "male", "age": 28.5, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 59, "name": "West, Miss. Constance Mirium", "pclass": 2, "sex": "female", "age": 5.0, "fare": 27.75, "port": "Southampton", "survived": 1}, {"id": 60, "name": "Goodwin, Master. William Frederick", "pclass": 3, "sex": "male", "age": 11.0, "fare": 46.9, "port": "Southampton", "survived": 0}, {"id": 61, "name": "Sirayanian, Mr. Orsen", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 62, "name": "Icard, Miss. Amelie", "pclass": 1, "sex": "female", "age": 38.0, "fare": 80.0, "port": "Unknown", "survived": 1}, {"id": 63, "name": "Harris, Mr. Henry Birkhardt", "pclass": 1, "sex": "male", "age": 45.0, "fare": 83.47, "port": "Southampton", "survived": 0}, {"id": 64, "name": "Skoog, Master. Harald", "pclass": 3, "sex": "male", "age": 4.0, "fare": 27.9, "port": "Southampton", "survived": 0}, {"id": 65, "name": "Stewart, Mr. Albert A", "pclass": 1, "sex": "male", "age": 29.7, "fare": 27.72, "port": "Cherbourg", "survived": 0}, {"id": 66, "name": "Moubarek, Master. Gerios", "pclass": 3, "sex": "male", "age": 29.7, "fare": 15.25, "port": "Cherbourg", "survived": 1}, {"id": 67, "name": "Nye, Mrs. (Elizabeth Ramell)", "pclass": 2, "sex": "female", "age": 29.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 68, "name": "Crease, Mr. Ernest James", "pclass": 3, "sex": "male", "age": 19.0, "fare": 8.16, "port": "Southampton", "survived": 0}, {"id": 69, "name": "Andersson, Miss. Erna Alexandra", "pclass": 3, "sex": "female", "age": 17.0, "fare": 7.92, "port": "Southampton", "survived": 1}, {"id": 70, "name": "Kink, Mr. Vincenz", "pclass": 3, "sex": "male", "age": 26.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 71, "name": "Jenkin, Mr. Stephen Curnow", "pclass": 2, "sex": "male", "age": 32.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 72, "name": "Goodwin, Miss. Lillian Amy", "pclass": 3, "sex": "female", "age": 16.0, "fare": 46.9, "port": "Southampton", "survived": 0}, {"id": 73, "name": "Hood, Mr. Ambrose Jr", "pclass": 2, "sex": "male", "age": 21.0, "fare": 73.5, "port": "Southampton", "survived": 0}, {"id": 74, "name": "Chronopoulos, Mr. Apostolos", "pclass": 3, "sex": "male", "age": 26.0, "fare": 14.45, "port": "Cherbourg", "survived": 0}, {"id": 75, "name": "Bing, Mr. Lee", "pclass": 3, "sex": "male", "age": 32.0, "fare": 56.5, "port": "Southampton", "survived": 1}, {"id": 76, "name": "Moen, Mr. Sigurd Hansen", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.65, "port": "Southampton", "survived": 0}, {"id": 77, "name": "Staneff, Mr. Ivan", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 78, "name": "Moutal, Mr. Rahamin Haim", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 79, "name": "Caldwell, Master. Alden Gates", "pclass": 2, "sex": "male", "age": 0.8, "fare": 29.0, "port": "Southampton", "survived": 1}, {"id": 80, "name": "Dowdell, Miss. Elizabeth", "pclass": 3, "sex": "female", "age": 30.0, "fare": 12.47, "port": "Southampton", "survived": 1}, {"id": 81, "name": "Waelens, Mr. Achille", "pclass": 3, "sex": "male", "age": 22.0, "fare": 9.0, "port": "Southampton", "survived": 0}, {"id": 82, "name": "Sheerlinck, Mr. Jan Baptist", "pclass": 3, "sex": "male", "age": 29.0, "fare": 9.5, "port": "Southampton", "survived": 1}, {"id": 83, "name": "McDermott, Miss. Brigdet Delia", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.79, "port": "Queenstown", "survived": 1}, {"id": 84, "name": "Carrau, Mr. Francisco M", "pclass": 1, "sex": "male", "age": 28.0, "fare": 47.1, "port": "Southampton", "survived": 0}, {"id": 85, "name": "Ilett, Miss. Bertha", "pclass": 2, "sex": "female", "age": 17.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 86, "name": "Backstrom, Mrs. Karl Alfred (Maria Mathilda Gustafsson)", "pclass": 3, "sex": "female", "age": 33.0, "fare": 15.85, "port": "Southampton", "survived": 1}, {"id": 87, "name": "Ford, Mr. William Neal", "pclass": 3, "sex": "male", "age": 16.0, "fare": 34.38, "port": "Southampton", "survived": 0}, {"id": 88, "name": "Slocovski, Mr. Selman Francis", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 89, "name": "Fortune, Miss. Mabel Helen", "pclass": 1, "sex": "female", "age": 23.0, "fare": 263.0, "port": "Southampton", "survived": 1}, {"id": 90, "name": "Celotti, Mr. Francesco", "pclass": 3, "sex": "male", "age": 24.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 91, "name": "Christmann, Mr. Emil", "pclass": 3, "sex": "male", "age": 29.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 92, "name": "Andreasson, Mr. Paul Edvin", "pclass": 3, "sex": "male", "age": 20.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 93, "name": "Chaffee, Mr. Herbert Fuller", "pclass": 1, "sex": "male", "age": 46.0, "fare": 61.17, "port": "Southampton", "survived": 0}, {"id": 94, "name": "Dean, Mr. Bertram Frank", "pclass": 3, "sex": "male", "age": 26.0, "fare": 20.57, "port": "Southampton", "survived": 0}, {"id": 95, "name": "Coxon, Mr. Daniel", "pclass": 3, "sex": "male", "age": 59.0, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 96, "name": "Shorney, Mr. Charles Joseph", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 97, "name": "Goldschmidt, Mr. George B", "pclass": 1, "sex": "male", "age": 71.0, "fare": 34.65, "port": "Cherbourg", "survived": 0}, {"id": 98, "name": "Greenfield, Mr. William Bertram", "pclass": 1, "sex": "male", "age": 23.0, "fare": 63.36, "port": "Cherbourg", "survived": 1}, {"id": 99, "name": "Doling, Mrs. John T (Ada Julia Bone)", "pclass": 2, "sex": "female", "age": 34.0, "fare": 23.0, "port": "Southampton", "survived": 1}, {"id": 100, "name": "Kantor, Mr. Sinai", "pclass": 2, "sex": "male", "age": 34.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 101, "name": "Petranec, Miss. Matilda", "pclass": 3, "sex": "female", "age": 28.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 102, "name": "Petroff, Mr. Pastcho (\"Pentcho\")", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 103, "name": "White, Mr. Richard Frasar", "pclass": 1, "sex": "male", "age": 21.0, "fare": 77.29, "port": "Southampton", "survived": 0}, {"id": 104, "name": "Johansson, Mr. Gustaf Joel", "pclass": 3, "sex": "male", "age": 33.0, "fare": 8.65, "port": "Southampton", "survived": 0}, {"id": 105, "name": "Gustafsson, Mr. Anders Vilhelm", "pclass": 3, "sex": "male", "age": 37.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 106, "name": "Mionoff, Mr. Stoytcho", "pclass": 3, "sex": "male", "age": 28.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 107, "name": "Salkjelsvik, Miss. Anna Kristine", "pclass": 3, "sex": "female", "age": 21.0, "fare": 7.65, "port": "Southampton", "survived": 1}, {"id": 108, "name": "Moss, Mr. Albert Johan", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.78, "port": "Southampton", "survived": 1}, {"id": 109, "name": "Rekic, Mr. Tido", "pclass": 3, "sex": "male", "age": 38.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 110, "name": "Moran, Miss. Bertha", "pclass": 3, "sex": "female", "age": 29.7, "fare": 24.15, "port": "Queenstown", "survived": 1}, {"id": 111, "name": "Porter, Mr. Walter Chamberlain", "pclass": 1, "sex": "male", "age": 47.0, "fare": 52.0, "port": "Southampton", "survived": 0}, {"id": 112, "name": "Zabour, Miss. Hileni", "pclass": 3, "sex": "female", "age": 14.5, "fare": 14.45, "port": "Cherbourg", "survived": 0}, {"id": 113, "name": "Barton, Mr. David John", "pclass": 3, "sex": "male", "age": 22.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 114, "name": "Jussila, Miss. Katriina", "pclass": 3, "sex": "female", "age": 20.0, "fare": 9.82, "port": "Southampton", "survived": 0}, {"id": 115, "name": "Attalah, Miss. Malake", "pclass": 3, "sex": "female", "age": 17.0, "fare": 14.46, "port": "Cherbourg", "survived": 0}, {"id": 116, "name": "Pekoniemi, Mr. Edvard", "pclass": 3, "sex": "male", "age": 21.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 117, "name": "Connors, Mr. Patrick", "pclass": 3, "sex": "male", "age": 70.5, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 118, "name": "Turpin, Mr. William John Robert", "pclass": 2, "sex": "male", "age": 29.0, "fare": 21.0, "port": "Southampton", "survived": 0}, {"id": 119, "name": "Baxter, Mr. Quigg Edmond", "pclass": 1, "sex": "male", "age": 24.0, "fare": 247.52, "port": "Cherbourg", "survived": 0}, {"id": 120, "name": "Andersson, Miss. Ellis Anna Maria", "pclass": 3, "sex": "female", "age": 2.0, "fare": 31.27, "port": "Southampton", "survived": 0}, {"id": 121, "name": "Hickman, Mr. Stanley George", "pclass": 2, "sex": "male", "age": 21.0, "fare": 73.5, "port": "Southampton", "survived": 0}, {"id": 122, "name": "Moore, Mr. Leonard Charles", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 123, "name": "Nasser, Mr. Nicholas", "pclass": 2, "sex": "male", "age": 32.5, "fare": 30.07, "port": "Cherbourg", "survived": 0}, {"id": 124, "name": "Webber, Miss. Susan", "pclass": 2, "sex": "female", "age": 32.5, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 125, "name": "White, Mr. Percival Wayland", "pclass": 1, "sex": "male", "age": 54.0, "fare": 77.29, "port": "Southampton", "survived": 0}, {"id": 126, "name": "Nicola-Yarred, Master. Elias", "pclass": 3, "sex": "male", "age": 12.0, "fare": 11.24, "port": "Cherbourg", "survived": 1}, {"id": 127, "name": "McMahon, Mr. Martin", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 128, "name": "Madsen, Mr. Fridtjof Arne", "pclass": 3, "sex": "male", "age": 24.0, "fare": 7.14, "port": "Southampton", "survived": 1}, {"id": 129, "name": "Peter, Miss. Anna", "pclass": 3, "sex": "female", "age": 29.7, "fare": 22.36, "port": "Cherbourg", "survived": 1}, {"id": 130, "name": "Ekstrom, Mr. Johan", "pclass": 3, "sex": "male", "age": 45.0, "fare": 6.97, "port": "Southampton", "survived": 0}, {"id": 131, "name": "Drazenoic, Mr. Jozef", "pclass": 3, "sex": "male", "age": 33.0, "fare": 7.9, "port": "Cherbourg", "survived": 0}, {"id": 132, "name": "Coelho, Mr. Domingos Fernandeo", "pclass": 3, "sex": "male", "age": 20.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 133, "name": "Robins, Mrs. Alexander A (Grace Charity Laury)", "pclass": 3, "sex": "female", "age": 47.0, "fare": 14.5, "port": "Southampton", "survived": 0}, {"id": 134, "name": "Weisz, Mrs. Leopold (Mathilde Francoise Pede)", "pclass": 2, "sex": "female", "age": 29.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 135, "name": "Sobey, Mr. Samuel James Hayden", "pclass": 2, "sex": "male", "age": 25.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 136, "name": "Richard, Mr. Emile", "pclass": 2, "sex": "male", "age": 23.0, "fare": 15.05, "port": "Cherbourg", "survived": 0}, {"id": 137, "name": "Newsom, Miss. Helen Monypeny", "pclass": 1, "sex": "female", "age": 19.0, "fare": 26.28, "port": "Southampton", "survived": 1}, {"id": 138, "name": "Futrelle, Mr. Jacques Heath", "pclass": 1, "sex": "male", "age": 37.0, "fare": 53.1, "port": "Southampton", "survived": 0}, {"id": 139, "name": "Osen, Mr. Olaf Elon", "pclass": 3, "sex": "male", "age": 16.0, "fare": 9.22, "port": "Southampton", "survived": 0}, {"id": 140, "name": "Giglio, Mr. Victor", "pclass": 1, "sex": "male", "age": 24.0, "fare": 79.2, "port": "Cherbourg", "survived": 0}, {"id": 141, "name": "Boulos, Mrs. Joseph (Sultana)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 15.25, "port": "Cherbourg", "survived": 0}, {"id": 142, "name": "Nysten, Miss. Anna Sofia", "pclass": 3, "sex": "female", "age": 22.0, "fare": 7.75, "port": "Southampton", "survived": 1}, {"id": 143, "name": "Hakkarainen, Mrs. Pekka Pietari (Elin Matilda Dolck)", "pclass": 3, "sex": "female", "age": 24.0, "fare": 15.85, "port": "Southampton", "survived": 1}, {"id": 144, "name": "Burke, Mr. Jeremiah", "pclass": 3, "sex": "male", "age": 19.0, "fare": 6.75, "port": "Queenstown", "survived": 0}, {"id": 145, "name": "Andrew, Mr. Edgardo Samuel", "pclass": 2, "sex": "male", "age": 18.0, "fare": 11.5, "port": "Southampton", "survived": 0}, {"id": 146, "name": "Nicholls, Mr. Joseph Charles", "pclass": 2, "sex": "male", "age": 19.0, "fare": 36.75, "port": "Southampton", "survived": 0}, {"id": 147, "name": "Andersson, Mr. August Edvard (\"Wennerstrom\")", "pclass": 3, "sex": "male", "age": 27.0, "fare": 7.8, "port": "Southampton", "survived": 1}, {"id": 148, "name": "Ford, Miss. Robina Maggie \"Ruby\"", "pclass": 3, "sex": "female", "age": 9.0, "fare": 34.38, "port": "Southampton", "survived": 0}, {"id": 149, "name": "Navratil, Mr. Michel (\"Louis M Hoffman\")", "pclass": 2, "sex": "male", "age": 36.5, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 150, "name": "Byles, Rev. Thomas Roussel Davids", "pclass": 2, "sex": "male", "age": 42.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 151, "name": "Bateman, Rev. Robert James", "pclass": 2, "sex": "male", "age": 51.0, "fare": 12.53, "port": "Southampton", "survived": 0}, {"id": 152, "name": "Pears, Mrs. Thomas (Edith Wearne)", "pclass": 1, "sex": "female", "age": 22.0, "fare": 66.6, "port": "Southampton", "survived": 1}, {"id": 153, "name": "Meo, Mr. Alfonzo", "pclass": 3, "sex": "male", "age": 55.5, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 154, "name": "van Billiard, Mr. Austin Blyler", "pclass": 3, "sex": "male", "age": 40.5, "fare": 14.5, "port": "Southampton", "survived": 0}, {"id": 155, "name": "Olsen, Mr. Ole Martin", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.31, "port": "Southampton", "survived": 0}, {"id": 156, "name": "Williams, Mr. Charles Duane", "pclass": 1, "sex": "male", "age": 51.0, "fare": 61.38, "port": "Cherbourg", "survived": 0}, {"id": 157, "name": "Gilnagh, Miss. Katherine \"Katie\"", "pclass": 3, "sex": "female", "age": 16.0, "fare": 7.73, "port": "Queenstown", "survived": 1}, {"id": 158, "name": "Corn, Mr. Harry", "pclass": 3, "sex": "male", "age": 30.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 159, "name": "Smiljanic, Mr. Mile", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 160, "name": "Sage, Master. Thomas Henry", "pclass": 3, "sex": "male", "age": 29.7, "fare": 69.55, "port": "Southampton", "survived": 0}, {"id": 161, "name": "Cribb, Mr. John Hatfield", "pclass": 3, "sex": "male", "age": 44.0, "fare": 16.1, "port": "Southampton", "survived": 0}, {"id": 162, "name": "Watt, Mrs. James (Elizabeth \"Bessie\" Inglis Milne)", "pclass": 2, "sex": "female", "age": 40.0, "fare": 15.75, "port": "Southampton", "survived": 1}, {"id": 163, "name": "Bengtsson, Mr. John Viktor", "pclass": 3, "sex": "male", "age": 26.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 164, "name": "Calic, Mr. Jovo", "pclass": 3, "sex": "male", "age": 17.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 165, "name": "Panula, Master. Eino Viljami", "pclass": 3, "sex": "male", "age": 1.0, "fare": 39.69, "port": "Southampton", "survived": 0}, {"id": 166, "name": "Goldsmith, Master. Frank John William \"Frankie\"", "pclass": 3, "sex": "male", "age": 9.0, "fare": 20.52, "port": "Southampton", "survived": 1}, {"id": 167, "name": "Chibnall, Mrs. (Edith Martha Bowerman)", "pclass": 1, "sex": "female", "age": 29.7, "fare": 55.0, "port": "Southampton", "survived": 1}, {"id": 168, "name": "Skoog, Mrs. William (Anna Bernhardina Karlsson)", "pclass": 3, "sex": "female", "age": 45.0, "fare": 27.9, "port": "Southampton", "survived": 0}, {"id": 169, "name": "Baumann, Mr. John D", "pclass": 1, "sex": "male", "age": 29.7, "fare": 25.93, "port": "Southampton", "survived": 0}, {"id": 170, "name": "Ling, Mr. Lee", "pclass": 3, "sex": "male", "age": 28.0, "fare": 56.5, "port": "Southampton", "survived": 0}, {"id": 171, "name": "Van der hoef, Mr. Wyckoff", "pclass": 1, "sex": "male", "age": 61.0, "fare": 33.5, "port": "Southampton", "survived": 0}, {"id": 172, "name": "Rice, Master. Arthur", "pclass": 3, "sex": "male", "age": 4.0, "fare": 29.12, "port": "Queenstown", "survived": 0}, {"id": 173, "name": "Johnson, Miss. Eleanor Ileen", "pclass": 3, "sex": "female", "age": 1.0, "fare": 11.13, "port": "Southampton", "survived": 1}, {"id": 174, "name": "Sivola, Mr. Antti Wilhelm", "pclass": 3, "sex": "male", "age": 21.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 175, "name": "Smith, Mr. James Clinch", "pclass": 1, "sex": "male", "age": 56.0, "fare": 30.7, "port": "Cherbourg", "survived": 0}, {"id": 176, "name": "Klasen, Mr. Klas Albin", "pclass": 3, "sex": "male", "age": 18.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 177, "name": "Lefebre, Master. Henry Forbes", "pclass": 3, "sex": "male", "age": 29.7, "fare": 25.47, "port": "Southampton", "survived": 0}, {"id": 178, "name": "Isham, Miss. Ann Elizabeth", "pclass": 1, "sex": "female", "age": 50.0, "fare": 28.71, "port": "Cherbourg", "survived": 0}, {"id": 179, "name": "Hale, Mr. Reginald", "pclass": 2, "sex": "male", "age": 30.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 180, "name": "Leonard, Mr. Lionel", "pclass": 3, "sex": "male", "age": 36.0, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 181, "name": "Sage, Miss. Constance Gladys", "pclass": 3, "sex": "female", "age": 29.7, "fare": 69.55, "port": "Southampton", "survived": 0}, {"id": 182, "name": "Pernot, Mr. Rene", "pclass": 2, "sex": "male", "age": 29.7, "fare": 15.05, "port": "Cherbourg", "survived": 0}, {"id": 183, "name": "Asplund, Master. Clarence Gustaf Hugo", "pclass": 3, "sex": "male", "age": 9.0, "fare": 31.39, "port": "Southampton", "survived": 0}, {"id": 184, "name": "Becker, Master. Richard F", "pclass": 2, "sex": "male", "age": 1.0, "fare": 39.0, "port": "Southampton", "survived": 1}, {"id": 185, "name": "Kink-Heilmann, Miss. Luise Gretchen", "pclass": 3, "sex": "female", "age": 4.0, "fare": 22.02, "port": "Southampton", "survived": 1}, {"id": 186, "name": "Rood, Mr. Hugh Roscoe", "pclass": 1, "sex": "male", "age": 29.7, "fare": 50.0, "port": "Southampton", "survived": 0}, {"id": 187, "name": "O'Brien, Mrs. Thomas (Johanna \"Hannah\" Godfrey)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 15.5, "port": "Queenstown", "survived": 1}, {"id": 188, "name": "Romaine, Mr. Charles Hallace (\"Mr C Rolmane\")", "pclass": 1, "sex": "male", "age": 45.0, "fare": 26.55, "port": "Southampton", "survived": 1}, {"id": 189, "name": "Bourke, Mr. John", "pclass": 3, "sex": "male", "age": 40.0, "fare": 15.5, "port": "Queenstown", "survived": 0}, {"id": 190, "name": "Turcin, Mr. Stjepan", "pclass": 3, "sex": "male", "age": 36.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 191, "name": "Pinsky, Mrs. (Rosa)", "pclass": 2, "sex": "female", "age": 32.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 192, "name": "Carbines, Mr. William", "pclass": 2, "sex": "male", "age": 19.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 193, "name": "Andersen-Jensen, Miss. Carla Christine Nielsine", "pclass": 3, "sex": "female", "age": 19.0, "fare": 7.85, "port": "Southampton", "survived": 1}, {"id": 194, "name": "Navratil, Master. Michel M", "pclass": 2, "sex": "male", "age": 3.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 195, "name": "Brown, Mrs. James Joseph (Margaret Tobin)", "pclass": 1, "sex": "female", "age": 44.0, "fare": 27.72, "port": "Cherbourg", "survived": 1}, {"id": 196, "name": "Lurette, Miss. Elise", "pclass": 1, "sex": "female", "age": 58.0, "fare": 146.52, "port": "Cherbourg", "survived": 1}, {"id": 197, "name": "Mernagh, Mr. Robert", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 198, "name": "Olsen, Mr. Karl Siegwart Andreas", "pclass": 3, "sex": "male", "age": 42.0, "fare": 8.4, "port": "Southampton", "survived": 0}, {"id": 199, "name": "Madigan, Miss. Margaret \"Maggie\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 200, "name": "Yrois, Miss. Henriette (\"Mrs Harbeck\")", "pclass": 2, "sex": "female", "age": 24.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 201, "name": "Vande Walle, Mr. Nestor Cyriel", "pclass": 3, "sex": "male", "age": 28.0, "fare": 9.5, "port": "Southampton", "survived": 0}, {"id": 202, "name": "Sage, Mr. Frederick", "pclass": 3, "sex": "male", "age": 29.7, "fare": 69.55, "port": "Southampton", "survived": 0}, {"id": 203, "name": "Johanson, Mr. Jakob Alfred", "pclass": 3, "sex": "male", "age": 34.0, "fare": 6.5, "port": "Southampton", "survived": 0}, {"id": 204, "name": "Youseff, Mr. Gerious", "pclass": 3, "sex": "male", "age": 45.5, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 205, "name": "Cohen, Mr. Gurshon \"Gus\"", "pclass": 3, "sex": "male", "age": 18.0, "fare": 8.05, "port": "Southampton", "survived": 1}, {"id": 206, "name": "Strom, Miss. Telma Matilda", "pclass": 3, "sex": "female", "age": 2.0, "fare": 10.46, "port": "Southampton", "survived": 0}, {"id": 207, "name": "Backstrom, Mr. Karl Alfred", "pclass": 3, "sex": "male", "age": 32.0, "fare": 15.85, "port": "Southampton", "survived": 0}, {"id": 208, "name": "Albimona, Mr. Nassef Cassem", "pclass": 3, "sex": "male", "age": 26.0, "fare": 18.79, "port": "Cherbourg", "survived": 1}, {"id": 209, "name": "Carr, Miss. Helen \"Ellen\"", "pclass": 3, "sex": "female", "age": 16.0, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 210, "name": "Blank, Mr. Henry", "pclass": 1, "sex": "male", "age": 40.0, "fare": 31.0, "port": "Cherbourg", "survived": 1}, {"id": 211, "name": "Ali, Mr. Ahmed", "pclass": 3, "sex": "male", "age": 24.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 212, "name": "Cameron, Miss. Clear Annie", "pclass": 2, "sex": "female", "age": 35.0, "fare": 21.0, "port": "Southampton", "survived": 1}, {"id": 213, "name": "Perkin, Mr. John Henry", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 214, "name": "Givard, Mr. Hans Kristensen", "pclass": 2, "sex": "male", "age": 30.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 215, "name": "Kiernan, Mr. Philip", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 216, "name": "Newell, Miss. Madeleine", "pclass": 1, "sex": "female", "age": 31.0, "fare": 113.28, "port": "Cherbourg", "survived": 1}, {"id": 217, "name": "Honkanen, Miss. Eliina", "pclass": 3, "sex": "female", "age": 27.0, "fare": 7.92, "port": "Southampton", "survived": 1}, {"id": 218, "name": "Jacobsohn, Mr. Sidney Samuel", "pclass": 2, "sex": "male", "age": 42.0, "fare": 27.0, "port": "Southampton", "survived": 0}, {"id": 219, "name": "Bazzani, Miss. Albina", "pclass": 1, "sex": "female", "age": 32.0, "fare": 76.29, "port": "Cherbourg", "survived": 1}, {"id": 220, "name": "Harris, Mr. Walter", "pclass": 2, "sex": "male", "age": 30.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 221, "name": "Sunderland, Mr. Victor Francis", "pclass": 3, "sex": "male", "age": 16.0, "fare": 8.05, "port": "Southampton", "survived": 1}, {"id": 222, "name": "Bracken, Mr. James H", "pclass": 2, "sex": "male", "age": 27.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 223, "name": "Green, Mr. George Henry", "pclass": 3, "sex": "male", "age": 51.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 224, "name": "Nenkoff, Mr. Christo", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 225, "name": "Hoyt, Mr. Frederick Maxfield", "pclass": 1, "sex": "male", "age": 38.0, "fare": 90.0, "port": "Southampton", "survived": 1}, {"id": 226, "name": "Berglund, Mr. Karl Ivar Sven", "pclass": 3, "sex": "male", "age": 22.0, "fare": 9.35, "port": "Southampton", "survived": 0}, {"id": 227, "name": "Mellors, Mr. William John", "pclass": 2, "sex": "male", "age": 19.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 228, "name": "Lovell, Mr. John Hall (\"Henry\")", "pclass": 3, "sex": "male", "age": 20.5, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 229, "name": "Fahlstrom, Mr. Arne Jonas", "pclass": 2, "sex": "male", "age": 18.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 230, "name": "Lefebre, Miss. Mathilde", "pclass": 3, "sex": "female", "age": 29.7, "fare": 25.47, "port": "Southampton", "survived": 0}, {"id": 231, "name": "Harris, Mrs. Henry Birkhardt (Irene Wallach)", "pclass": 1, "sex": "female", "age": 35.0, "fare": 83.47, "port": "Southampton", "survived": 1}, {"id": 232, "name": "Larsson, Mr. Bengt Edvin", "pclass": 3, "sex": "male", "age": 29.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 233, "name": "Sjostedt, Mr. Ernst Adolf", "pclass": 2, "sex": "male", "age": 59.0, "fare": 13.5, "port": "Southampton", "survived": 0}, {"id": 234, "name": "Asplund, Miss. Lillian Gertrud", "pclass": 3, "sex": "female", "age": 5.0, "fare": 31.39, "port": "Southampton", "survived": 1}, {"id": 235, "name": "Leyson, Mr. Robert William Norman", "pclass": 2, "sex": "male", "age": 24.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 236, "name": "Harknett, Miss. Alice Phoebe", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.55, "port": "Southampton", "survived": 0}, {"id": 237, "name": "Hold, Mr. Stephen", "pclass": 2, "sex": "male", "age": 44.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 238, "name": "Collyer, Miss. Marjorie \"Lottie\"", "pclass": 2, "sex": "female", "age": 8.0, "fare": 26.25, "port": "Southampton", "survived": 1}, {"id": 239, "name": "Pengelly, Mr. Frederick William", "pclass": 2, "sex": "male", "age": 19.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 240, "name": "Hunt, Mr. George Henry", "pclass": 2, "sex": "male", "age": 33.0, "fare": 12.28, "port": "Southampton", "survived": 0}, {"id": 241, "name": "Zabour, Miss. Thamine", "pclass": 3, "sex": "female", "age": 29.7, "fare": 14.45, "port": "Cherbourg", "survived": 0}, {"id": 242, "name": "Murphy, Miss. Katherine \"Kate\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 15.5, "port": "Queenstown", "survived": 1}, {"id": 243, "name": "Coleridge, Mr. Reginald Charles", "pclass": 2, "sex": "male", "age": 29.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 244, "name": "Maenpaa, Mr. Matti Alexanteri", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.12, "port": "Southampton", "survived": 0}, {"id": 245, "name": "Attalah, Mr. Sleiman", "pclass": 3, "sex": "male", "age": 30.0, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 246, "name": "Minahan, Dr. William Edward", "pclass": 1, "sex": "male", "age": 44.0, "fare": 90.0, "port": "Queenstown", "survived": 0}, {"id": 247, "name": "Lindahl, Miss. Agda Thorilda Viktoria", "pclass": 3, "sex": "female", "age": 25.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 248, "name": "Hamalainen, Mrs. William (Anna)", "pclass": 2, "sex": "female", "age": 24.0, "fare": 14.5, "port": "Southampton", "survived": 1}, {"id": 249, "name": "Beckwith, Mr. Richard Leonard", "pclass": 1, "sex": "male", "age": 37.0, "fare": 52.55, "port": "Southampton", "survived": 1}, {"id": 250, "name": "Carter, Rev. Ernest Courtenay", "pclass": 2, "sex": "male", "age": 54.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 251, "name": "Reed, Mr. James George", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 252, "name": "Strom, Mrs. Wilhelm (Elna Matilda Persson)", "pclass": 3, "sex": "female", "age": 29.0, "fare": 10.46, "port": "Southampton", "survived": 0}, {"id": 253, "name": "Stead, Mr. William Thomas", "pclass": 1, "sex": "male", "age": 62.0, "fare": 26.55, "port": "Southampton", "survived": 0}, {"id": 254, "name": "Lobb, Mr. William Arthur", "pclass": 3, "sex": "male", "age": 30.0, "fare": 16.1, "port": "Southampton", "survived": 0}, {"id": 255, "name": "Rosblom, Mrs. Viktor (Helena Wilhelmina)", "pclass": 3, "sex": "female", "age": 41.0, "fare": 20.21, "port": "Southampton", "survived": 0}, {"id": 256, "name": "Touma, Mrs. Darwis (Hanne Youssef Razi)", "pclass": 3, "sex": "female", "age": 29.0, "fare": 15.25, "port": "Cherbourg", "survived": 1}, {"id": 257, "name": "Thorne, Mrs. Gertrude Maybelle", "pclass": 1, "sex": "female", "age": 29.7, "fare": 79.2, "port": "Cherbourg", "survived": 1}, {"id": 258, "name": "Cherry, Miss. Gladys", "pclass": 1, "sex": "female", "age": 30.0, "fare": 86.5, "port": "Southampton", "survived": 1}, {"id": 259, "name": "Ward, Miss. Anna", "pclass": 1, "sex": "female", "age": 35.0, "fare": 512.33, "port": "Cherbourg", "survived": 1}, {"id": 260, "name": "Parrish, Mrs. (Lutie Davis)", "pclass": 2, "sex": "female", "age": 50.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 261, "name": "Smith, Mr. Thomas", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 262, "name": "Asplund, Master. Edvin Rojj Felix", "pclass": 3, "sex": "male", "age": 3.0, "fare": 31.39, "port": "Southampton", "survived": 1}, {"id": 263, "name": "Taussig, Mr. Emil", "pclass": 1, "sex": "male", "age": 52.0, "fare": 79.65, "port": "Southampton", "survived": 0}, {"id": 264, "name": "Harrison, Mr. William", "pclass": 1, "sex": "male", "age": 40.0, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 265, "name": "Henry, Miss. Delia", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 266, "name": "Reeves, Mr. David", "pclass": 2, "sex": "male", "age": 36.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 267, "name": "Panula, Mr. Ernesti Arvid", "pclass": 3, "sex": "male", "age": 16.0, "fare": 39.69, "port": "Southampton", "survived": 0}, {"id": 268, "name": "Persson, Mr. Ernst Ulrik", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.78, "port": "Southampton", "survived": 1}, {"id": 269, "name": "Graham, Mrs. William Thompson (Edith Junkins)", "pclass": 1, "sex": "female", "age": 58.0, "fare": 153.46, "port": "Southampton", "survived": 1}, {"id": 270, "name": "Bissette, Miss. Amelia", "pclass": 1, "sex": "female", "age": 35.0, "fare": 135.63, "port": "Southampton", "survived": 1}, {"id": 271, "name": "Cairns, Mr. Alexander", "pclass": 1, "sex": "male", "age": 29.7, "fare": 31.0, "port": "Southampton", "survived": 0}, {"id": 272, "name": "Tornquist, Mr. William Henry", "pclass": 3, "sex": "male", "age": 25.0, "fare": 0.0, "port": "Southampton", "survived": 1}, {"id": 273, "name": "Mellinger, Mrs. (Elizabeth Anne Maidment)", "pclass": 2, "sex": "female", "age": 41.0, "fare": 19.5, "port": "Southampton", "survived": 1}, {"id": 274, "name": "Natsch, Mr. Charles H", "pclass": 1, "sex": "male", "age": 37.0, "fare": 29.7, "port": "Cherbourg", "survived": 0}, {"id": 275, "name": "Healy, Miss. Hanora \"Nora\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 276, "name": "Andrews, Miss. Kornelia Theodosia", "pclass": 1, "sex": "female", "age": 63.0, "fare": 77.96, "port": "Southampton", "survived": 1}, {"id": 277, "name": "Lindblom, Miss. Augusta Charlotta", "pclass": 3, "sex": "female", "age": 45.0, "fare": 7.75, "port": "Southampton", "survived": 0}, {"id": 278, "name": "Parkes, Mr. Francis \"Frank\"", "pclass": 2, "sex": "male", "age": 29.7, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 279, "name": "Rice, Master. Eric", "pclass": 3, "sex": "male", "age": 7.0, "fare": 29.12, "port": "Queenstown", "survived": 0}, {"id": 280, "name": "Abbott, Mrs. Stanton (Rosa Hunt)", "pclass": 3, "sex": "female", "age": 35.0, "fare": 20.25, "port": "Southampton", "survived": 1}, {"id": 281, "name": "Duane, Mr. Frank", "pclass": 3, "sex": "male", "age": 65.0, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 282, "name": "Olsson, Mr. Nils Johan Goransson", "pclass": 3, "sex": "male", "age": 28.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 283, "name": "de Pelsmaeker, Mr. Alfons", "pclass": 3, "sex": "male", "age": 16.0, "fare": 9.5, "port": "Southampton", "survived": 0}, {"id": 284, "name": "Dorking, Mr. Edward Arthur", "pclass": 3, "sex": "male", "age": 19.0, "fare": 8.05, "port": "Southampton", "survived": 1}, {"id": 285, "name": "Smith, Mr. Richard William", "pclass": 1, "sex": "male", "age": 29.7, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 286, "name": "Stankovic, Mr. Ivan", "pclass": 3, "sex": "male", "age": 33.0, "fare": 8.66, "port": "Cherbourg", "survived": 0}, {"id": 287, "name": "de Mulder, Mr. Theodore", "pclass": 3, "sex": "male", "age": 30.0, "fare": 9.5, "port": "Southampton", "survived": 1}, {"id": 288, "name": "Naidenoff, Mr. Penko", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 289, "name": "Hosono, Mr. Masabumi", "pclass": 2, "sex": "male", "age": 42.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 290, "name": "Connolly, Miss. Kate", "pclass": 3, "sex": "female", "age": 22.0, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 291, "name": "Barber, Miss. Ellen \"Nellie\"", "pclass": 1, "sex": "female", "age": 26.0, "fare": 78.85, "port": "Southampton", "survived": 1}, {"id": 292, "name": "Bishop, Mrs. Dickinson H (Helen Walton)", "pclass": 1, "sex": "female", "age": 19.0, "fare": 91.08, "port": "Cherbourg", "survived": 1}, {"id": 293, "name": "Levy, Mr. Rene Jacques", "pclass": 2, "sex": "male", "age": 36.0, "fare": 12.88, "port": "Cherbourg", "survived": 0}, {"id": 294, "name": "Haas, Miss. Aloisia", "pclass": 3, "sex": "female", "age": 24.0, "fare": 8.85, "port": "Southampton", "survived": 0}, {"id": 295, "name": "Mineff, Mr. Ivan", "pclass": 3, "sex": "male", "age": 24.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 296, "name": "Lewy, Mr. Ervin G", "pclass": 1, "sex": "male", "age": 29.7, "fare": 27.72, "port": "Cherbourg", "survived": 0}, {"id": 297, "name": "Hanna, Mr. Mansour", "pclass": 3, "sex": "male", "age": 23.5, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 298, "name": "Allison, Miss. Helen Loraine", "pclass": 1, "sex": "female", "age": 2.0, "fare": 151.55, "port": "Southampton", "survived": 0}, {"id": 299, "name": "Saalfeld, Mr. Adolphe", "pclass": 1, "sex": "male", "age": 29.7, "fare": 30.5, "port": "Southampton", "survived": 1}, {"id": 300, "name": "Baxter, Mrs. James (Helene DeLaudeniere Chaput)", "pclass": 1, "sex": "female", "age": 50.0, "fare": 247.52, "port": "Cherbourg", "survived": 1}, {"id": 301, "name": "Kelly, Miss. Anna Katherine \"Annie Kate\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 302, "name": "McCoy, Mr. Bernard", "pclass": 3, "sex": "male", "age": 29.7, "fare": 23.25, "port": "Queenstown", "survived": 1}, {"id": 303, "name": "Johnson, Mr. William Cahoone Jr", "pclass": 3, "sex": "male", "age": 19.0, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 304, "name": "Keane, Miss. Nora A", "pclass": 2, "sex": "female", "age": 29.7, "fare": 12.35, "port": "Queenstown", "survived": 1}, {"id": 305, "name": "Williams, Mr. Howard Hugh \"Harry\"", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 306, "name": "Allison, Master. Hudson Trevor", "pclass": 1, "sex": "male", "age": 0.9, "fare": 151.55, "port": "Southampton", "survived": 1}, {"id": 307, "name": "Fleming, Miss. Margaret", "pclass": 1, "sex": "female", "age": 29.7, "fare": 110.88, "port": "Cherbourg", "survived": 1}, {"id": 308, "name": "Penasco y Castellana, Mrs. Victor de Satode (Maria Josefa Perez de Soto y Vallejo)", "pclass": 1, "sex": "female", "age": 17.0, "fare": 108.9, "port": "Cherbourg", "survived": 1}, {"id": 309, "name": "Abelson, Mr. Samuel", "pclass": 2, "sex": "male", "age": 30.0, "fare": 24.0, "port": "Cherbourg", "survived": 0}, {"id": 310, "name": "Francatelli, Miss. Laura Mabel", "pclass": 1, "sex": "female", "age": 30.0, "fare": 56.93, "port": "Cherbourg", "survived": 1}, {"id": 311, "name": "Hays, Miss. Margaret Bechstein", "pclass": 1, "sex": "female", "age": 24.0, "fare": 83.16, "port": "Cherbourg", "survived": 1}, {"id": 312, "name": "Ryerson, Miss. Emily Borie", "pclass": 1, "sex": "female", "age": 18.0, "fare": 262.38, "port": "Cherbourg", "survived": 1}, {"id": 313, "name": "Lahtinen, Mrs. William (Anna Sylfven)", "pclass": 2, "sex": "female", "age": 26.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 314, "name": "Hendekovic, Mr. Ignjac", "pclass": 3, "sex": "male", "age": 28.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 315, "name": "Hart, Mr. Benjamin", "pclass": 2, "sex": "male", "age": 43.0, "fare": 26.25, "port": "Southampton", "survived": 0}, {"id": 316, "name": "Nilsson, Miss. Helmina Josefina", "pclass": 3, "sex": "female", "age": 26.0, "fare": 7.85, "port": "Southampton", "survived": 1}, {"id": 317, "name": "Kantor, Mrs. Sinai (Miriam Sternin)", "pclass": 2, "sex": "female", "age": 24.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 318, "name": "Moraweck, Dr. Ernest", "pclass": 2, "sex": "male", "age": 54.0, "fare": 14.0, "port": "Southampton", "survived": 0}, {"id": 319, "name": "Wick, Miss. Mary Natalie", "pclass": 1, "sex": "female", "age": 31.0, "fare": 164.87, "port": "Southampton", "survived": 1}, {"id": 320, "name": "Spedden, Mrs. Frederic Oakley (Margaretta Corning Stone)", "pclass": 1, "sex": "female", "age": 40.0, "fare": 134.5, "port": "Cherbourg", "survived": 1}, {"id": 321, "name": "Dennis, Mr. Samuel", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 322, "name": "Danoff, Mr. Yoto", "pclass": 3, "sex": "male", "age": 27.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 323, "name": "Slayter, Miss. Hilda Mary", "pclass": 2, "sex": "female", "age": 30.0, "fare": 12.35, "port": "Queenstown", "survived": 1}, {"id": 324, "name": "Caldwell, Mrs. Albert Francis (Sylvia Mae Harbaugh)", "pclass": 2, "sex": "female", "age": 22.0, "fare": 29.0, "port": "Southampton", "survived": 1}, {"id": 325, "name": "Sage, Mr. George John Jr", "pclass": 3, "sex": "male", "age": 29.7, "fare": 69.55, "port": "Southampton", "survived": 0}, {"id": 326, "name": "Young, Miss. Marie Grice", "pclass": 1, "sex": "female", "age": 36.0, "fare": 135.63, "port": "Cherbourg", "survived": 1}, {"id": 327, "name": "Nysveen, Mr. Johan Hansen", "pclass": 3, "sex": "male", "age": 61.0, "fare": 6.24, "port": "Southampton", "survived": 0}, {"id": 328, "name": "Ball, Mrs. (Ada E Hall)", "pclass": 2, "sex": "female", "age": 36.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 329, "name": "Goldsmith, Mrs. Frank John (Emily Alice Brown)", "pclass": 3, "sex": "female", "age": 31.0, "fare": 20.52, "port": "Southampton", "survived": 1}, {"id": 330, "name": "Hippach, Miss. Jean Gertrude", "pclass": 1, "sex": "female", "age": 16.0, "fare": 57.98, "port": "Cherbourg", "survived": 1}, {"id": 331, "name": "McCoy, Miss. Agnes", "pclass": 3, "sex": "female", "age": 29.7, "fare": 23.25, "port": "Queenstown", "survived": 1}, {"id": 332, "name": "Partner, Mr. Austen", "pclass": 1, "sex": "male", "age": 45.5, "fare": 28.5, "port": "Southampton", "survived": 0}, {"id": 333, "name": "Graham, Mr. George Edward", "pclass": 1, "sex": "male", "age": 38.0, "fare": 153.46, "port": "Southampton", "survived": 0}, {"id": 334, "name": "Vander Planke, Mr. Leo Edmondus", "pclass": 3, "sex": "male", "age": 16.0, "fare": 18.0, "port": "Southampton", "survived": 0}, {"id": 335, "name": "Frauenthal, Mrs. Henry William (Clara Heinsheimer)", "pclass": 1, "sex": "female", "age": 29.7, "fare": 133.65, "port": "Southampton", "survived": 1}, {"id": 336, "name": "Denkoff, Mr. Mitto", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 337, "name": "Pears, Mr. Thomas Clinton", "pclass": 1, "sex": "male", "age": 29.0, "fare": 66.6, "port": "Southampton", "survived": 0}, {"id": 338, "name": "Burns, Miss. Elizabeth Margaret", "pclass": 1, "sex": "female", "age": 41.0, "fare": 134.5, "port": "Cherbourg", "survived": 1}, {"id": 339, "name": "Dahl, Mr. Karl Edwart", "pclass": 3, "sex": "male", "age": 45.0, "fare": 8.05, "port": "Southampton", "survived": 1}, {"id": 340, "name": "Blackwell, Mr. Stephen Weart", "pclass": 1, "sex": "male", "age": 45.0, "fare": 35.5, "port": "Southampton", "survived": 0}, {"id": 341, "name": "Navratil, Master. Edmond Roger", "pclass": 2, "sex": "male", "age": 2.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 342, "name": "Fortune, Miss. Alice Elizabeth", "pclass": 1, "sex": "female", "age": 24.0, "fare": 263.0, "port": "Southampton", "survived": 1}, {"id": 343, "name": "Collander, Mr. Erik Gustaf", "pclass": 2, "sex": "male", "age": 28.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 344, "name": "Sedgwick, Mr. Charles Frederick Waddington", "pclass": 2, "sex": "male", "age": 25.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 345, "name": "Fox, Mr. Stanley Hubert", "pclass": 2, "sex": "male", "age": 36.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 346, "name": "Brown, Miss. Amelia \"Mildred\"", "pclass": 2, "sex": "female", "age": 24.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 347, "name": "Smith, Miss. Marion Elsie", "pclass": 2, "sex": "female", "age": 40.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 348, "name": "Davison, Mrs. Thomas Henry (Mary E Finck)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 16.1, "port": "Southampton", "survived": 1}, {"id": 349, "name": "Coutts, Master. William Loch \"William\"", "pclass": 3, "sex": "male", "age": 3.0, "fare": 15.9, "port": "Southampton", "survived": 1}, {"id": 350, "name": "Dimic, Mr. Jovan", "pclass": 3, "sex": "male", "age": 42.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 351, "name": "Odahl, Mr. Nils Martin", "pclass": 3, "sex": "male", "age": 23.0, "fare": 9.22, "port": "Southampton", "survived": 0}, {"id": 352, "name": "Williams-Lambert, Mr. Fletcher Fellows", "pclass": 1, "sex": "male", "age": 29.7, "fare": 35.0, "port": "Southampton", "survived": 0}, {"id": 353, "name": "Elias, Mr. Tannous", "pclass": 3, "sex": "male", "age": 15.0, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 354, "name": "Arnold-Franchi, Mr. Josef", "pclass": 3, "sex": "male", "age": 25.0, "fare": 17.8, "port": "Southampton", "survived": 0}, {"id": 355, "name": "Yousif, Mr. Wazli", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 356, "name": "Vanden Steen, Mr. Leo Peter", "pclass": 3, "sex": "male", "age": 28.0, "fare": 9.5, "port": "Southampton", "survived": 0}, {"id": 357, "name": "Bowerman, Miss. Elsie Edith", "pclass": 1, "sex": "female", "age": 22.0, "fare": 55.0, "port": "Southampton", "survived": 1}, {"id": 358, "name": "Funk, Miss. Annie Clemmer", "pclass": 2, "sex": "female", "age": 38.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 359, "name": "McGovern, Miss. Mary", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.88, "port": "Queenstown", "survived": 1}, {"id": 360, "name": "Mockler, Miss. Helen Mary \"Ellie\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.88, "port": "Queenstown", "survived": 1}, {"id": 361, "name": "Skoog, Mr. Wilhelm", "pclass": 3, "sex": "male", "age": 40.0, "fare": 27.9, "port": "Southampton", "survived": 0}, {"id": 362, "name": "del Carlo, Mr. Sebastiano", "pclass": 2, "sex": "male", "age": 29.0, "fare": 27.72, "port": "Cherbourg", "survived": 0}, {"id": 363, "name": "Barbara, Mrs. (Catherine David)", "pclass": 3, "sex": "female", "age": 45.0, "fare": 14.45, "port": "Cherbourg", "survived": 0}, {"id": 364, "name": "Asim, Mr. Adola", "pclass": 3, "sex": "male", "age": 35.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 365, "name": "O'Brien, Mr. Thomas", "pclass": 3, "sex": "male", "age": 29.7, "fare": 15.5, "port": "Queenstown", "survived": 0}, {"id": 366, "name": "Adahl, Mr. Mauritz Nils Martin", "pclass": 3, "sex": "male", "age": 30.0, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 367, "name": "Warren, Mrs. Frank Manley (Anna Sophia Atkinson)", "pclass": 1, "sex": "female", "age": 60.0, "fare": 75.25, "port": "Cherbourg", "survived": 1}, {"id": 368, "name": "Moussa, Mrs. (Mantoura Boulos)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.23, "port": "Cherbourg", "survived": 1}, {"id": 369, "name": "Jermyn, Miss. Annie", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 370, "name": "Aubart, Mme. Leontine Pauline", "pclass": 1, "sex": "female", "age": 24.0, "fare": 69.3, "port": "Cherbourg", "survived": 1}, {"id": 371, "name": "Harder, Mr. George Achilles", "pclass": 1, "sex": "male", "age": 25.0, "fare": 55.44, "port": "Cherbourg", "survived": 1}, {"id": 372, "name": "Wiklund, Mr. Jakob Alfred", "pclass": 3, "sex": "male", "age": 18.0, "fare": 6.5, "port": "Southampton", "survived": 0}, {"id": 373, "name": "Beavan, Mr. William Thomas", "pclass": 3, "sex": "male", "age": 19.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 374, "name": "Ringhini, Mr. Sante", "pclass": 1, "sex": "male", "age": 22.0, "fare": 135.63, "port": "Cherbourg", "survived": 0}, {"id": 375, "name": "Palsson, Miss. Stina Viola", "pclass": 3, "sex": "female", "age": 3.0, "fare": 21.07, "port": "Southampton", "survived": 0}, {"id": 376, "name": "Meyer, Mrs. Edgar Joseph (Leila Saks)", "pclass": 1, "sex": "female", "age": 29.7, "fare": 82.17, "port": "Cherbourg", "survived": 1}, {"id": 377, "name": "Landergren, Miss. Aurora Adelia", "pclass": 3, "sex": "female", "age": 22.0, "fare": 7.25, "port": "Southampton", "survived": 1}, {"id": 378, "name": "Widener, Mr. Harry Elkins", "pclass": 1, "sex": "male", "age": 27.0, "fare": 211.5, "port": "Cherbourg", "survived": 0}, {"id": 379, "name": "Betros, Mr. Tannous", "pclass": 3, "sex": "male", "age": 20.0, "fare": 4.01, "port": "Cherbourg", "survived": 0}, {"id": 380, "name": "Gustafsson, Mr. Karl Gideon", "pclass": 3, "sex": "male", "age": 19.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 381, "name": "Bidois, Miss. Rosalie", "pclass": 1, "sex": "female", "age": 42.0, "fare": 227.53, "port": "Cherbourg", "survived": 1}, {"id": 382, "name": "Nakid, Miss. Maria (\"Mary\")", "pclass": 3, "sex": "female", "age": 1.0, "fare": 15.74, "port": "Cherbourg", "survived": 1}, {"id": 383, "name": "Tikkanen, Mr. Juho", "pclass": 3, "sex": "male", "age": 32.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 384, "name": "Holverson, Mrs. Alexander Oskar (Mary Aline Towner)", "pclass": 1, "sex": "female", "age": 35.0, "fare": 52.0, "port": "Southampton", "survived": 1}, {"id": 385, "name": "Plotcharsky, Mr. Vasil", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 386, "name": "Davies, Mr. Charles Henry", "pclass": 2, "sex": "male", "age": 18.0, "fare": 73.5, "port": "Southampton", "survived": 0}, {"id": 387, "name": "Goodwin, Master. Sidney Leonard", "pclass": 3, "sex": "male", "age": 1.0, "fare": 46.9, "port": "Southampton", "survived": 0}, {"id": 388, "name": "Buss, Miss. Kate", "pclass": 2, "sex": "female", "age": 36.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 389, "name": "Sadlier, Mr. Matthew", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.73, "port": "Queenstown", "survived": 0}, {"id": 390, "name": "Lehmann, Miss. Bertha", "pclass": 2, "sex": "female", "age": 17.0, "fare": 12.0, "port": "Cherbourg", "survived": 1}, {"id": 391, "name": "Carter, Mr. William Ernest", "pclass": 1, "sex": "male", "age": 36.0, "fare": 120.0, "port": "Southampton", "survived": 1}, {"id": 392, "name": "Jansson, Mr. Carl Olof", "pclass": 3, "sex": "male", "age": 21.0, "fare": 7.8, "port": "Southampton", "survived": 1}, {"id": 393, "name": "Gustafsson, Mr. Johan Birger", "pclass": 3, "sex": "male", "age": 28.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 394, "name": "Newell, Miss. Marjorie", "pclass": 1, "sex": "female", "age": 23.0, "fare": 113.28, "port": "Cherbourg", "survived": 1}, {"id": 395, "name": "Sandstrom, Mrs. Hjalmar (Agnes Charlotta Bengtsson)", "pclass": 3, "sex": "female", "age": 24.0, "fare": 16.7, "port": "Southampton", "survived": 1}, {"id": 396, "name": "Johansson, Mr. Erik", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.8, "port": "Southampton", "survived": 0}, {"id": 397, "name": "Olsson, Miss. Elina", "pclass": 3, "sex": "female", "age": 31.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 398, "name": "McKane, Mr. Peter David", "pclass": 2, "sex": "male", "age": 46.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 399, "name": "Pain, Dr. Alfred", "pclass": 2, "sex": "male", "age": 23.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 400, "name": "Trout, Mrs. William H (Jessie L)", "pclass": 2, "sex": "female", "age": 28.0, "fare": 12.65, "port": "Southampton", "survived": 1}, {"id": 401, "name": "Niskanen, Mr. Juha", "pclass": 3, "sex": "male", "age": 39.0, "fare": 7.92, "port": "Southampton", "survived": 1}, {"id": 402, "name": "Adams, Mr. John", "pclass": 3, "sex": "male", "age": 26.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 403, "name": "Jussila, Miss. Mari Aina", "pclass": 3, "sex": "female", "age": 21.0, "fare": 9.82, "port": "Southampton", "survived": 0}, {"id": 404, "name": "Hakkarainen, Mr. Pekka Pietari", "pclass": 3, "sex": "male", "age": 28.0, "fare": 15.85, "port": "Southampton", "survived": 0}, {"id": 405, "name": "Oreskovic, Miss. Marija", "pclass": 3, "sex": "female", "age": 20.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 406, "name": "Gale, Mr. Shadrach", "pclass": 2, "sex": "male", "age": 34.0, "fare": 21.0, "port": "Southampton", "survived": 0}, {"id": 407, "name": "Widegren, Mr. Carl/Charles Peter", "pclass": 3, "sex": "male", "age": 51.0, "fare": 7.75, "port": "Southampton", "survived": 0}, {"id": 408, "name": "Richards, Master. William Rowe", "pclass": 2, "sex": "male", "age": 3.0, "fare": 18.75, "port": "Southampton", "survived": 1}, {"id": 409, "name": "Birkeland, Mr. Hans Martin Monsen", "pclass": 3, "sex": "male", "age": 21.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 410, "name": "Lefebre, Miss. Ida", "pclass": 3, "sex": "female", "age": 29.7, "fare": 25.47, "port": "Southampton", "survived": 0}, {"id": 411, "name": "Sdycoff, Mr. Todor", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 412, "name": "Hart, Mr. Henry", "pclass": 3, "sex": "male", "age": 29.7, "fare": 6.86, "port": "Queenstown", "survived": 0}, {"id": 413, "name": "Minahan, Miss. Daisy E", "pclass": 1, "sex": "female", "age": 33.0, "fare": 90.0, "port": "Queenstown", "survived": 1}, {"id": 414, "name": "Cunningham, Mr. Alfred Fleming", "pclass": 2, "sex": "male", "age": 29.7, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 415, "name": "Sundman, Mr. Johan Julian", "pclass": 3, "sex": "male", "age": 44.0, "fare": 7.92, "port": "Southampton", "survived": 1}, {"id": 416, "name": "Meek, Mrs. Thomas (Annie Louise Rowley)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 417, "name": "Drew, Mrs. James Vivian (Lulu Thorne Christian)", "pclass": 2, "sex": "female", "age": 34.0, "fare": 32.5, "port": "Southampton", "survived": 1}, {"id": 418, "name": "Silven, Miss. Lyyli Karoliina", "pclass": 2, "sex": "female", "age": 18.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 419, "name": "Matthews, Mr. William John", "pclass": 2, "sex": "male", "age": 30.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 420, "name": "Van Impe, Miss. Catharina", "pclass": 3, "sex": "female", "age": 10.0, "fare": 24.15, "port": "Southampton", "survived": 0}, {"id": 421, "name": "Gheorgheff, Mr. Stanio", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Cherbourg", "survived": 0}, {"id": 422, "name": "Charters, Mr. David", "pclass": 3, "sex": "male", "age": 21.0, "fare": 7.73, "port": "Queenstown", "survived": 0}, {"id": 423, "name": "Zimmerman, Mr. Leo", "pclass": 3, "sex": "male", "age": 29.0, "fare": 7.88, "port": "Southampton", "survived": 0}, {"id": 424, "name": "Danbom, Mrs. Ernst Gilbert (Anna Sigrid Maria Brogren)", "pclass": 3, "sex": "female", "age": 28.0, "fare": 14.4, "port": "Southampton", "survived": 0}, {"id": 425, "name": "Rosblom, Mr. Viktor Richard", "pclass": 3, "sex": "male", "age": 18.0, "fare": 20.21, "port": "Southampton", "survived": 0}, {"id": 426, "name": "Wiseman, Mr. Phillippe", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 427, "name": "Clarke, Mrs. Charles V (Ada Maria Winfield)", "pclass": 2, "sex": "female", "age": 28.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 428, "name": "Phillips, Miss. Kate Florence (\"Mrs Kate Louise Phillips Marshall\")", "pclass": 2, "sex": "female", "age": 19.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 429, "name": "Flynn, Mr. James", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 430, "name": "Pickard, Mr. Berk (Berk Trembisky)", "pclass": 3, "sex": "male", "age": 32.0, "fare": 8.05, "port": "Southampton", "survived": 1}, {"id": 431, "name": "Bjornstrom-Steffansson, Mr. Mauritz Hakan", "pclass": 1, "sex": "male", "age": 28.0, "fare": 26.55, "port": "Southampton", "survived": 1}, {"id": 432, "name": "Thorneycroft, Mrs. Percival (Florence Kate White)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 16.1, "port": "Southampton", "survived": 1}, {"id": 433, "name": "Louch, Mrs. Charles Alexander (Alice Adelaide Slow)", "pclass": 2, "sex": "female", "age": 42.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 434, "name": "Kallio, Mr. Nikolai Erland", "pclass": 3, "sex": "male", "age": 17.0, "fare": 7.12, "port": "Southampton", "survived": 0}, {"id": 435, "name": "Silvey, Mr. William Baird", "pclass": 1, "sex": "male", "age": 50.0, "fare": 55.9, "port": "Southampton", "survived": 0}, {"id": 436, "name": "Carter, Miss. Lucile Polk", "pclass": 1, "sex": "female", "age": 14.0, "fare": 120.0, "port": "Southampton", "survived": 1}, {"id": 437, "name": "Ford, Miss. Doolina Margaret \"Daisy\"", "pclass": 3, "sex": "female", "age": 21.0, "fare": 34.38, "port": "Southampton", "survived": 0}, {"id": 438, "name": "Richards, Mrs. Sidney (Emily Hocking)", "pclass": 2, "sex": "female", "age": 24.0, "fare": 18.75, "port": "Southampton", "survived": 1}, {"id": 439, "name": "Fortune, Mr. Mark", "pclass": 1, "sex": "male", "age": 64.0, "fare": 263.0, "port": "Southampton", "survived": 0}, {"id": 440, "name": "Kvillner, Mr. Johan Henrik Johannesson", "pclass": 2, "sex": "male", "age": 31.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 441, "name": "Hart, Mrs. Benjamin (Esther Ada Bloomfield)", "pclass": 2, "sex": "female", "age": 45.0, "fare": 26.25, "port": "Southampton", "survived": 1}, {"id": 442, "name": "Hampe, Mr. Leon", "pclass": 3, "sex": "male", "age": 20.0, "fare": 9.5, "port": "Southampton", "survived": 0}, {"id": 443, "name": "Petterson, Mr. Johan Emil", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 444, "name": "Reynaldo, Ms. Encarnacion", "pclass": 2, "sex": "female", "age": 28.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 445, "name": "Johannesen-Bratthammer, Mr. Bernt", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.11, "port": "Southampton", "survived": 1}, {"id": 446, "name": "Dodge, Master. Washington", "pclass": 1, "sex": "male", "age": 4.0, "fare": 81.86, "port": "Southampton", "survived": 1}, {"id": 447, "name": "Mellinger, Miss. Madeleine Violet", "pclass": 2, "sex": "female", "age": 13.0, "fare": 19.5, "port": "Southampton", "survived": 1}, {"id": 448, "name": "Seward, Mr. Frederic Kimber", "pclass": 1, "sex": "male", "age": 34.0, "fare": 26.55, "port": "Southampton", "survived": 1}, {"id": 449, "name": "Baclini, Miss. Marie Catherine", "pclass": 3, "sex": "female", "age": 5.0, "fare": 19.26, "port": "Cherbourg", "survived": 1}, {"id": 450, "name": "Peuchen, Major. Arthur Godfrey", "pclass": 1, "sex": "male", "age": 52.0, "fare": 30.5, "port": "Southampton", "survived": 1}, {"id": 451, "name": "West, Mr. Edwy Arthur", "pclass": 2, "sex": "male", "age": 36.0, "fare": 27.75, "port": "Southampton", "survived": 0}, {"id": 452, "name": "Hagland, Mr. Ingvald Olai Olsen", "pclass": 3, "sex": "male", "age": 29.7, "fare": 19.97, "port": "Southampton", "survived": 0}, {"id": 453, "name": "Foreman, Mr. Benjamin Laventall", "pclass": 1, "sex": "male", "age": 30.0, "fare": 27.75, "port": "Cherbourg", "survived": 0}, {"id": 454, "name": "Goldenberg, Mr. Samuel L", "pclass": 1, "sex": "male", "age": 49.0, "fare": 89.1, "port": "Cherbourg", "survived": 1}, {"id": 455, "name": "Peduzzi, Mr. Joseph", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 456, "name": "Jalsevac, Mr. Ivan", "pclass": 3, "sex": "male", "age": 29.0, "fare": 7.9, "port": "Cherbourg", "survived": 1}, {"id": 457, "name": "Millet, Mr. Francis Davis", "pclass": 1, "sex": "male", "age": 65.0, "fare": 26.55, "port": "Southampton", "survived": 0}, {"id": 458, "name": "Kenyon, Mrs. Frederick R (Marion)", "pclass": 1, "sex": "female", "age": 29.7, "fare": 51.86, "port": "Southampton", "survived": 1}, {"id": 459, "name": "Toomey, Miss. Ellen", "pclass": 2, "sex": "female", "age": 50.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 460, "name": "O'Connor, Mr. Maurice", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 461, "name": "Anderson, Mr. Harry", "pclass": 1, "sex": "male", "age": 48.0, "fare": 26.55, "port": "Southampton", "survived": 1}, {"id": 462, "name": "Morley, Mr. William", "pclass": 3, "sex": "male", "age": 34.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 463, "name": "Gee, Mr. Arthur H", "pclass": 1, "sex": "male", "age": 47.0, "fare": 38.5, "port": "Southampton", "survived": 0}, {"id": 464, "name": "Milling, Mr. Jacob Christian", "pclass": 2, "sex": "male", "age": 48.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 465, "name": "Maisner, Mr. Simon", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 466, "name": "Goncalves, Mr. Manuel Estanslas", "pclass": 3, "sex": "male", "age": 38.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 467, "name": "Campbell, Mr. William", "pclass": 2, "sex": "male", "age": 29.7, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 468, "name": "Smart, Mr. John Montgomery", "pclass": 1, "sex": "male", "age": 56.0, "fare": 26.55, "port": "Southampton", "survived": 0}, {"id": 469, "name": "Scanlan, Mr. James", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.72, "port": "Queenstown", "survived": 0}, {"id": 470, "name": "Baclini, Miss. Helene Barbara", "pclass": 3, "sex": "female", "age": 0.8, "fare": 19.26, "port": "Cherbourg", "survived": 1}, {"id": 471, "name": "Keefe, Mr. Arthur", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 472, "name": "Cacic, Mr. Luka", "pclass": 3, "sex": "male", "age": 38.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 473, "name": "West, Mrs. Edwy Arthur (Ada Mary Worth)", "pclass": 2, "sex": "female", "age": 33.0, "fare": 27.75, "port": "Southampton", "survived": 1}, {"id": 474, "name": "Jerwan, Mrs. Amin S (Marie Marthe Thuillard)", "pclass": 2, "sex": "female", "age": 23.0, "fare": 13.79, "port": "Cherbourg", "survived": 1}, {"id": 475, "name": "Strandberg, Miss. Ida Sofia", "pclass": 3, "sex": "female", "age": 22.0, "fare": 9.84, "port": "Southampton", "survived": 0}, {"id": 476, "name": "Clifford, Mr. George Quincy", "pclass": 1, "sex": "male", "age": 29.7, "fare": 52.0, "port": "Southampton", "survived": 0}, {"id": 477, "name": "Renouf, Mr. Peter Henry", "pclass": 2, "sex": "male", "age": 34.0, "fare": 21.0, "port": "Southampton", "survived": 0}, {"id": 478, "name": "Braund, Mr. Lewis Richard", "pclass": 3, "sex": "male", "age": 29.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 479, "name": "Karlsson, Mr. Nils August", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.52, "port": "Southampton", "survived": 0}, {"id": 480, "name": "Hirvonen, Miss. Hildur E", "pclass": 3, "sex": "female", "age": 2.0, "fare": 12.29, "port": "Southampton", "survived": 1}, {"id": 481, "name": "Goodwin, Master. Harold Victor", "pclass": 3, "sex": "male", "age": 9.0, "fare": 46.9, "port": "Southampton", "survived": 0}, {"id": 482, "name": "Frost, Mr. Anthony Wood \"Archie\"", "pclass": 2, "sex": "male", "age": 29.7, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 483, "name": "Rouse, Mr. Richard Henry", "pclass": 3, "sex": "male", "age": 50.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 484, "name": "Turkula, Mrs. (Hedwig)", "pclass": 3, "sex": "female", "age": 63.0, "fare": 9.59, "port": "Southampton", "survived": 1}, {"id": 485, "name": "Bishop, Mr. Dickinson H", "pclass": 1, "sex": "male", "age": 25.0, "fare": 91.08, "port": "Cherbourg", "survived": 1}, {"id": 486, "name": "Lefebre, Miss. Jeannie", "pclass": 3, "sex": "female", "age": 29.7, "fare": 25.47, "port": "Southampton", "survived": 0}, {"id": 487, "name": "Hoyt, Mrs. Frederick Maxfield (Jane Anne Forby)", "pclass": 1, "sex": "female", "age": 35.0, "fare": 90.0, "port": "Southampton", "survived": 1}, {"id": 488, "name": "Kent, Mr. Edward Austin", "pclass": 1, "sex": "male", "age": 58.0, "fare": 29.7, "port": "Cherbourg", "survived": 0}, {"id": 489, "name": "Somerton, Mr. Francis William", "pclass": 3, "sex": "male", "age": 30.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 490, "name": "Coutts, Master. Eden Leslie \"Neville\"", "pclass": 3, "sex": "male", "age": 9.0, "fare": 15.9, "port": "Southampton", "survived": 1}, {"id": 491, "name": "Hagland, Mr. Konrad Mathias Reiersen", "pclass": 3, "sex": "male", "age": 29.7, "fare": 19.97, "port": "Southampton", "survived": 0}, {"id": 492, "name": "Windelov, Mr. Einar", "pclass": 3, "sex": "male", "age": 21.0, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 493, "name": "Molson, Mr. Harry Markland", "pclass": 1, "sex": "male", "age": 55.0, "fare": 30.5, "port": "Southampton", "survived": 0}, {"id": 494, "name": "Artagaveytia, Mr. Ramon", "pclass": 1, "sex": "male", "age": 71.0, "fare": 49.5, "port": "Cherbourg", "survived": 0}, {"id": 495, "name": "Stanley, Mr. Edward Roland", "pclass": 3, "sex": "male", "age": 21.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 496, "name": "Yousseff, Mr. Gerious", "pclass": 3, "sex": "male", "age": 29.7, "fare": 14.46, "port": "Cherbourg", "survived": 0}, {"id": 497, "name": "Eustis, Miss. Elizabeth Mussey", "pclass": 1, "sex": "female", "age": 54.0, "fare": 78.27, "port": "Cherbourg", "survived": 1}, {"id": 498, "name": "Shellard, Mr. Frederick William", "pclass": 3, "sex": "male", "age": 29.7, "fare": 15.1, "port": "Southampton", "survived": 0}, {"id": 499, "name": "Allison, Mrs. Hudson J C (Bessie Waldo Daniels)", "pclass": 1, "sex": "female", "age": 25.0, "fare": 151.55, "port": "Southampton", "survived": 0}, {"id": 500, "name": "Svensson, Mr. Olof", "pclass": 3, "sex": "male", "age": 24.0, "fare": 7.8, "port": "Southampton", "survived": 0}, {"id": 501, "name": "Calic, Mr. Petar", "pclass": 3, "sex": "male", "age": 17.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 502, "name": "Canavan, Miss. Mary", "pclass": 3, "sex": "female", "age": 21.0, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 503, "name": "O'Sullivan, Miss. Bridget Mary", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.63, "port": "Queenstown", "survived": 0}, {"id": 504, "name": "Laitinen, Miss. Kristina Sofia", "pclass": 3, "sex": "female", "age": 37.0, "fare": 9.59, "port": "Southampton", "survived": 0}, {"id": 505, "name": "Maioni, Miss. Roberta", "pclass": 1, "sex": "female", "age": 16.0, "fare": 86.5, "port": "Southampton", "survived": 1}, {"id": 506, "name": "Penasco y Castellana, Mr. Victor de Satode", "pclass": 1, "sex": "male", "age": 18.0, "fare": 108.9, "port": "Cherbourg", "survived": 0}, {"id": 507, "name": "Quick, Mrs. Frederick Charles (Jane Richards)", "pclass": 2, "sex": "female", "age": 33.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 508, "name": "Bradley, Mr. George (\"George Arthur Brayton\")", "pclass": 1, "sex": "male", "age": 29.7, "fare": 26.55, "port": "Southampton", "survived": 1}, {"id": 509, "name": "Olsen, Mr. Henry Margido", "pclass": 3, "sex": "male", "age": 28.0, "fare": 22.52, "port": "Southampton", "survived": 0}, {"id": 510, "name": "Lang, Mr. Fang", "pclass": 3, "sex": "male", "age": 26.0, "fare": 56.5, "port": "Southampton", "survived": 1}, {"id": 511, "name": "Daly, Mr. Eugene Patrick", "pclass": 3, "sex": "male", "age": 29.0, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 512, "name": "Webber, Mr. James", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 513, "name": "McGough, Mr. James Robert", "pclass": 1, "sex": "male", "age": 36.0, "fare": 26.29, "port": "Southampton", "survived": 1}, {"id": 514, "name": "Rothschild, Mrs. Martin (Elizabeth L. Barrett)", "pclass": 1, "sex": "female", "age": 54.0, "fare": 59.4, "port": "Cherbourg", "survived": 1}, {"id": 515, "name": "Coleff, Mr. Satio", "pclass": 3, "sex": "male", "age": 24.0, "fare": 7.5, "port": "Southampton", "survived": 0}, {"id": 516, "name": "Walker, Mr. William Anderson", "pclass": 1, "sex": "male", "age": 47.0, "fare": 34.02, "port": "Southampton", "survived": 0}, {"id": 517, "name": "Lemore, Mrs. (Amelia Milley)", "pclass": 2, "sex": "female", "age": 34.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 518, "name": "Ryan, Mr. Patrick", "pclass": 3, "sex": "male", "age": 29.7, "fare": 24.15, "port": "Queenstown", "survived": 0}, {"id": 519, "name": "Angle, Mrs. William A (Florence \"Mary\" Agnes Hughes)", "pclass": 2, "sex": "female", "age": 36.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 520, "name": "Pavlovic, Mr. Stefo", "pclass": 3, "sex": "male", "age": 32.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 521, "name": "Perreault, Miss. Anne", "pclass": 1, "sex": "female", "age": 30.0, "fare": 93.5, "port": "Southampton", "survived": 1}, {"id": 522, "name": "Vovk, Mr. Janko", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 523, "name": "Lahoud, Mr. Sarkis", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 524, "name": "Hippach, Mrs. Louis Albert (Ida Sophia Fischer)", "pclass": 1, "sex": "female", "age": 44.0, "fare": 57.98, "port": "Cherbourg", "survived": 1}, {"id": 525, "name": "Kassem, Mr. Fared", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 526, "name": "Farrell, Mr. James", "pclass": 3, "sex": "male", "age": 40.5, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 527, "name": "Ridsdale, Miss. Lucy", "pclass": 2, "sex": "female", "age": 50.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 528, "name": "Farthing, Mr. John", "pclass": 1, "sex": "male", "age": 29.7, "fare": 221.78, "port": "Southampton", "survived": 0}, {"id": 529, "name": "Salonen, Mr. Johan Werner", "pclass": 3, "sex": "male", "age": 39.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 530, "name": "Hocking, Mr. Richard George", "pclass": 2, "sex": "male", "age": 23.0, "fare": 11.5, "port": "Southampton", "survived": 0}, {"id": 531, "name": "Quick, Miss. Phyllis May", "pclass": 2, "sex": "female", "age": 2.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 532, "name": "Toufik, Mr. Nakli", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 533, "name": "Elias, Mr. Joseph Jr", "pclass": 3, "sex": "male", "age": 17.0, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 534, "name": "Peter, Mrs. Catherine (Catherine Rizk)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 22.36, "port": "Cherbourg", "survived": 1}, {"id": 535, "name": "Cacic, Miss. Marija", "pclass": 3, "sex": "female", "age": 30.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 536, "name": "Hart, Miss. Eva Miriam", "pclass": 2, "sex": "female", "age": 7.0, "fare": 26.25, "port": "Southampton", "survived": 1}, {"id": 537, "name": "Butt, Major. Archibald Willingham", "pclass": 1, "sex": "male", "age": 45.0, "fare": 26.55, "port": "Southampton", "survived": 0}, {"id": 538, "name": "LeRoy, Miss. Bertha", "pclass": 1, "sex": "female", "age": 30.0, "fare": 106.42, "port": "Cherbourg", "survived": 1}, {"id": 539, "name": "Risien, Mr. Samuel Beard", "pclass": 3, "sex": "male", "age": 29.7, "fare": 14.5, "port": "Southampton", "survived": 0}, {"id": 540, "name": "Frolicher, Miss. Hedwig Margaritha", "pclass": 1, "sex": "female", "age": 22.0, "fare": 49.5, "port": "Cherbourg", "survived": 1}, {"id": 541, "name": "Crosby, Miss. Harriet R", "pclass": 1, "sex": "female", "age": 36.0, "fare": 71.0, "port": "Southampton", "survived": 1}, {"id": 542, "name": "Andersson, Miss. Ingeborg Constanzia", "pclass": 3, "sex": "female", "age": 9.0, "fare": 31.27, "port": "Southampton", "survived": 0}, {"id": 543, "name": "Andersson, Miss. Sigrid Elisabeth", "pclass": 3, "sex": "female", "age": 11.0, "fare": 31.27, "port": "Southampton", "survived": 0}, {"id": 544, "name": "Beane, Mr. Edward", "pclass": 2, "sex": "male", "age": 32.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 545, "name": "Douglas, Mr. Walter Donald", "pclass": 1, "sex": "male", "age": 50.0, "fare": 106.42, "port": "Cherbourg", "survived": 0}, {"id": 546, "name": "Nicholson, Mr. Arthur Ernest", "pclass": 1, "sex": "male", "age": 64.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 547, "name": "Beane, Mrs. Edward (Ethel Clarke)", "pclass": 2, "sex": "female", "age": 19.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 548, "name": "Padro y Manent, Mr. Julian", "pclass": 2, "sex": "male", "age": 29.7, "fare": 13.86, "port": "Cherbourg", "survived": 1}, {"id": 549, "name": "Goldsmith, Mr. Frank John", "pclass": 3, "sex": "male", "age": 33.0, "fare": 20.52, "port": "Southampton", "survived": 0}, {"id": 550, "name": "Davies, Master. John Morgan Jr", "pclass": 2, "sex": "male", "age": 8.0, "fare": 36.75, "port": "Southampton", "survived": 1}, {"id": 551, "name": "Thayer, Mr. John Borland Jr", "pclass": 1, "sex": "male", "age": 17.0, "fare": 110.88, "port": "Cherbourg", "survived": 1}, {"id": 552, "name": "Sharp, Mr. Percival James R", "pclass": 2, "sex": "male", "age": 27.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 553, "name": "O'Brien, Mr. Timothy", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.83, "port": "Queenstown", "survived": 0}, {"id": 554, "name": "Leeni, Mr. Fahim (\"Philip Zenni\")", "pclass": 3, "sex": "male", "age": 22.0, "fare": 7.22, "port": "Cherbourg", "survived": 1}, {"id": 555, "name": "Ohman, Miss. Velin", "pclass": 3, "sex": "female", "age": 22.0, "fare": 7.78, "port": "Southampton", "survived": 1}, {"id": 556, "name": "Wright, Mr. George", "pclass": 1, "sex": "male", "age": 62.0, "fare": 26.55, "port": "Southampton", "survived": 0}, {"id": 557, "name": "Duff Gordon, Lady. (Lucille Christiana Sutherland) (\"Mrs Morgan\")", "pclass": 1, "sex": "female", "age": 48.0, "fare": 39.6, "port": "Cherbourg", "survived": 1}, {"id": 558, "name": "Robbins, Mr. Victor", "pclass": 1, "sex": "male", "age": 29.7, "fare": 227.53, "port": "Cherbourg", "survived": 0}, {"id": 559, "name": "Taussig, Mrs. Emil (Tillie Mandelbaum)", "pclass": 1, "sex": "female", "age": 39.0, "fare": 79.65, "port": "Southampton", "survived": 1}, {"id": 560, "name": "de Messemaeker, Mrs. Guillaume Joseph (Emma)", "pclass": 3, "sex": "female", "age": 36.0, "fare": 17.4, "port": "Southampton", "survived": 1}, {"id": 561, "name": "Morrow, Mr. Thomas Rowan", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 562, "name": "Sivic, Mr. Husein", "pclass": 3, "sex": "male", "age": 40.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 563, "name": "Norman, Mr. Robert Douglas", "pclass": 2, "sex": "male", "age": 28.0, "fare": 13.5, "port": "Southampton", "survived": 0}, {"id": 564, "name": "Simmons, Mr. John", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 565, "name": "Meanwell, Miss. (Marion Ogden)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 566, "name": "Davies, Mr. Alfred J", "pclass": 3, "sex": "male", "age": 24.0, "fare": 24.15, "port": "Southampton", "survived": 0}, {"id": 567, "name": "Stoytcheff, Mr. Ilia", "pclass": 3, "sex": "male", "age": 19.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 568, "name": "Palsson, Mrs. Nils (Alma Cornelia Berglund)", "pclass": 3, "sex": "female", "age": 29.0, "fare": 21.07, "port": "Southampton", "survived": 0}, {"id": 569, "name": "Doharr, Mr. Tannous", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 570, "name": "Jonsson, Mr. Carl", "pclass": 3, "sex": "male", "age": 32.0, "fare": 7.85, "port": "Southampton", "survived": 1}, {"id": 571, "name": "Harris, Mr. George", "pclass": 2, "sex": "male", "age": 62.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 572, "name": "Appleton, Mrs. Edward Dale (Charlotte Lamson)", "pclass": 1, "sex": "female", "age": 53.0, "fare": 51.48, "port": "Southampton", "survived": 1}, {"id": 573, "name": "Flynn, Mr. John Irwin (\"Irving\")", "pclass": 1, "sex": "male", "age": 36.0, "fare": 26.39, "port": "Southampton", "survived": 1}, {"id": 574, "name": "Kelly, Miss. Mary", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 575, "name": "Rush, Mr. Alfred George John", "pclass": 3, "sex": "male", "age": 16.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 576, "name": "Patchett, Mr. George", "pclass": 3, "sex": "male", "age": 19.0, "fare": 14.5, "port": "Southampton", "survived": 0}, {"id": 577, "name": "Garside, Miss. Ethel", "pclass": 2, "sex": "female", "age": 34.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 578, "name": "Silvey, Mrs. William Baird (Alice Munger)", "pclass": 1, "sex": "female", "age": 39.0, "fare": 55.9, "port": "Southampton", "survived": 1}, {"id": 579, "name": "Caram, Mrs. Joseph (Maria Elias)", "pclass": 3, "sex": "female", "age": 29.7, "fare": 14.46, "port": "Cherbourg", "survived": 0}, {"id": 580, "name": "Jussila, Mr. Eiriik", "pclass": 3, "sex": "male", "age": 32.0, "fare": 7.92, "port": "Southampton", "survived": 1}, {"id": 581, "name": "Christy, Miss. Julie Rachel", "pclass": 2, "sex": "female", "age": 25.0, "fare": 30.0, "port": "Southampton", "survived": 1}, {"id": 582, "name": "Thayer, Mrs. John Borland (Marian Longstreth Morris)", "pclass": 1, "sex": "female", "age": 39.0, "fare": 110.88, "port": "Cherbourg", "survived": 1}, {"id": 583, "name": "Downton, Mr. William James", "pclass": 2, "sex": "male", "age": 54.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 584, "name": "Ross, Mr. John Hugo", "pclass": 1, "sex": "male", "age": 36.0, "fare": 40.12, "port": "Cherbourg", "survived": 0}, {"id": 585, "name": "Paulner, Mr. Uscher", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.71, "port": "Cherbourg", "survived": 0}, {"id": 586, "name": "Taussig, Miss. Ruth", "pclass": 1, "sex": "female", "age": 18.0, "fare": 79.65, "port": "Southampton", "survived": 1}, {"id": 587, "name": "Jarvis, Mr. John Denzil", "pclass": 2, "sex": "male", "age": 47.0, "fare": 15.0, "port": "Southampton", "survived": 0}, {"id": 588, "name": "Frolicher-Stehli, Mr. Maxmillian", "pclass": 1, "sex": "male", "age": 60.0, "fare": 79.2, "port": "Cherbourg", "survived": 1}, {"id": 589, "name": "Gilinski, Mr. Eliezer", "pclass": 3, "sex": "male", "age": 22.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 590, "name": "Murdlin, Mr. Joseph", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 591, "name": "Rintamaki, Mr. Matti", "pclass": 3, "sex": "male", "age": 35.0, "fare": 7.12, "port": "Southampton", "survived": 0}, {"id": 592, "name": "Stephenson, Mrs. Walter Bertram (Martha Eustis)", "pclass": 1, "sex": "female", "age": 52.0, "fare": 78.27, "port": "Cherbourg", "survived": 1}, {"id": 593, "name": "Elsbury, Mr. William James", "pclass": 3, "sex": "male", "age": 47.0, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 594, "name": "Bourke, Miss. Mary", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 595, "name": "Chapman, Mr. John Henry", "pclass": 2, "sex": "male", "age": 37.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 596, "name": "Van Impe, Mr. Jean Baptiste", "pclass": 3, "sex": "male", "age": 36.0, "fare": 24.15, "port": "Southampton", "survived": 0}, {"id": 597, "name": "Leitch, Miss. Jessie Wills", "pclass": 2, "sex": "female", "age": 29.7, "fare": 33.0, "port": "Southampton", "survived": 1}, {"id": 598, "name": "Johnson, Mr. Alfred", "pclass": 3, "sex": "male", "age": 49.0, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 599, "name": "Boulos, Mr. Hanna", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 600, "name": "Duff Gordon, Sir. Cosmo Edmund (\"Mr Morgan\")", "pclass": 1, "sex": "male", "age": 49.0, "fare": 56.93, "port": "Cherbourg", "survived": 1}, {"id": 601, "name": "Jacobsohn, Mrs. Sidney Samuel (Amy Frances Christy)", "pclass": 2, "sex": "female", "age": 24.0, "fare": 27.0, "port": "Southampton", "survived": 1}, {"id": 602, "name": "Slabenoff, Mr. Petco", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 603, "name": "Harrington, Mr. Charles H", "pclass": 1, "sex": "male", "age": 29.7, "fare": 42.4, "port": "Southampton", "survived": 0}, {"id": 604, "name": "Torber, Mr. Ernst William", "pclass": 3, "sex": "male", "age": 44.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 605, "name": "Homer, Mr. Harry (\"Mr E Haven\")", "pclass": 1, "sex": "male", "age": 35.0, "fare": 26.55, "port": "Cherbourg", "survived": 1}, {"id": 606, "name": "Lindell, Mr. Edvard Bengtsson", "pclass": 3, "sex": "male", "age": 36.0, "fare": 15.55, "port": "Southampton", "survived": 0}, {"id": 607, "name": "Karaic, Mr. Milan", "pclass": 3, "sex": "male", "age": 30.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 608, "name": "Daniel, Mr. Robert Williams", "pclass": 1, "sex": "male", "age": 27.0, "fare": 30.5, "port": "Southampton", "survived": 1}, {"id": 609, "name": "Laroche, Mrs. Joseph (Juliette Marie Louise Lafargue)", "pclass": 2, "sex": "female", "age": 22.0, "fare": 41.58, "port": "Cherbourg", "survived": 1}, {"id": 610, "name": "Shutes, Miss. Elizabeth W", "pclass": 1, "sex": "female", "age": 40.0, "fare": 153.46, "port": "Southampton", "survived": 1}, {"id": 611, "name": "Andersson, Mrs. Anders Johan (Alfrida Konstantia Brogren)", "pclass": 3, "sex": "female", "age": 39.0, "fare": 31.27, "port": "Southampton", "survived": 0}, {"id": 612, "name": "Jardin, Mr. Jose Neto", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 613, "name": "Murphy, Miss. Margaret Jane", "pclass": 3, "sex": "female", "age": 29.7, "fare": 15.5, "port": "Queenstown", "survived": 1}, {"id": 614, "name": "Horgan, Mr. John", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 615, "name": "Brocklebank, Mr. William Alfred", "pclass": 3, "sex": "male", "age": 35.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 616, "name": "Herman, Miss. Alice", "pclass": 2, "sex": "female", "age": 24.0, "fare": 65.0, "port": "Southampton", "survived": 1}, {"id": 617, "name": "Danbom, Mr. Ernst Gilbert", "pclass": 3, "sex": "male", "age": 34.0, "fare": 14.4, "port": "Southampton", "survived": 0}, {"id": 618, "name": "Lobb, Mrs. William Arthur (Cordelia K Stanlick)", "pclass": 3, "sex": "female", "age": 26.0, "fare": 16.1, "port": "Southampton", "survived": 0}, {"id": 619, "name": "Becker, Miss. Marion Louise", "pclass": 2, "sex": "female", "age": 4.0, "fare": 39.0, "port": "Southampton", "survived": 1}, {"id": 620, "name": "Gavey, Mr. Lawrence", "pclass": 2, "sex": "male", "age": 26.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 621, "name": "Yasbeck, Mr. Antoni", "pclass": 3, "sex": "male", "age": 27.0, "fare": 14.45, "port": "Cherbourg", "survived": 0}, {"id": 622, "name": "Kimball, Mr. Edwin Nelson Jr", "pclass": 1, "sex": "male", "age": 42.0, "fare": 52.55, "port": "Southampton", "survived": 1}, {"id": 623, "name": "Nakid, Mr. Sahid", "pclass": 3, "sex": "male", "age": 20.0, "fare": 15.74, "port": "Cherbourg", "survived": 1}, {"id": 624, "name": "Hansen, Mr. Henry Damsgaard", "pclass": 3, "sex": "male", "age": 21.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 625, "name": "Bowen, Mr. David John \"Dai\"", "pclass": 3, "sex": "male", "age": 21.0, "fare": 16.1, "port": "Southampton", "survived": 0}, {"id": 626, "name": "Sutton, Mr. Frederick", "pclass": 1, "sex": "male", "age": 61.0, "fare": 32.32, "port": "Southampton", "survived": 0}, {"id": 627, "name": "Kirkland, Rev. Charles Leonard", "pclass": 2, "sex": "male", "age": 57.0, "fare": 12.35, "port": "Queenstown", "survived": 0}, {"id": 628, "name": "Longley, Miss. Gretchen Fiske", "pclass": 1, "sex": "female", "age": 21.0, "fare": 77.96, "port": "Southampton", "survived": 1}, {"id": 629, "name": "Bostandyeff, Mr. Guentcho", "pclass": 3, "sex": "male", "age": 26.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 630, "name": "O'Connell, Mr. Patrick D", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.73, "port": "Queenstown", "survived": 0}, {"id": 631, "name": "Barkworth, Mr. Algernon Henry Wilson", "pclass": 1, "sex": "male", "age": 80.0, "fare": 30.0, "port": "Southampton", "survived": 1}, {"id": 632, "name": "Lundahl, Mr. Johan Svensson", "pclass": 3, "sex": "male", "age": 51.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 633, "name": "Stahelin-Maeglin, Dr. Max", "pclass": 1, "sex": "male", "age": 32.0, "fare": 30.5, "port": "Cherbourg", "survived": 1}, {"id": 634, "name": "Parr, Mr. William Henry Marsh", "pclass": 1, "sex": "male", "age": 29.7, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 635, "name": "Skoog, Miss. Mabel", "pclass": 3, "sex": "female", "age": 9.0, "fare": 27.9, "port": "Southampton", "survived": 0}, {"id": 636, "name": "Davis, Miss. Mary", "pclass": 2, "sex": "female", "age": 28.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 637, "name": "Leinonen, Mr. Antti Gustaf", "pclass": 3, "sex": "male", "age": 32.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 638, "name": "Collyer, Mr. Harvey", "pclass": 2, "sex": "male", "age": 31.0, "fare": 26.25, "port": "Southampton", "survived": 0}, {"id": 639, "name": "Panula, Mrs. Juha (Maria Emilia Ojala)", "pclass": 3, "sex": "female", "age": 41.0, "fare": 39.69, "port": "Southampton", "survived": 0}, {"id": 640, "name": "Thorneycroft, Mr. Percival", "pclass": 3, "sex": "male", "age": 29.7, "fare": 16.1, "port": "Southampton", "survived": 0}, {"id": 641, "name": "Jensen, Mr. Hans Peder", "pclass": 3, "sex": "male", "age": 20.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 642, "name": "Sagesser, Mlle. Emma", "pclass": 1, "sex": "female", "age": 24.0, "fare": 69.3, "port": "Cherbourg", "survived": 1}, {"id": 643, "name": "Skoog, Miss. Margit Elizabeth", "pclass": 3, "sex": "female", "age": 2.0, "fare": 27.9, "port": "Southampton", "survived": 0}, {"id": 644, "name": "Foo, Mr. Choong", "pclass": 3, "sex": "male", "age": 29.7, "fare": 56.5, "port": "Southampton", "survived": 1}, {"id": 645, "name": "Baclini, Miss. Eugenie", "pclass": 3, "sex": "female", "age": 0.8, "fare": 19.26, "port": "Cherbourg", "survived": 1}, {"id": 646, "name": "Harper, Mr. Henry Sleeper", "pclass": 1, "sex": "male", "age": 48.0, "fare": 76.73, "port": "Cherbourg", "survived": 1}, {"id": 647, "name": "Cor, Mr. Liudevit", "pclass": 3, "sex": "male", "age": 19.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 648, "name": "Simonius-Blumer, Col. Oberst Alfons", "pclass": 1, "sex": "male", "age": 56.0, "fare": 35.5, "port": "Cherbourg", "survived": 1}, {"id": 649, "name": "Willey, Mr. Edward", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.55, "port": "Southampton", "survived": 0}, {"id": 650, "name": "Stanley, Miss. Amy Zillah Elsie", "pclass": 3, "sex": "female", "age": 23.0, "fare": 7.55, "port": "Southampton", "survived": 1}, {"id": 651, "name": "Mitkoff, Mr. Mito", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 652, "name": "Doling, Miss. Elsie", "pclass": 2, "sex": "female", "age": 18.0, "fare": 23.0, "port": "Southampton", "survived": 1}, {"id": 653, "name": "Kalvik, Mr. Johannes Halvorsen", "pclass": 3, "sex": "male", "age": 21.0, "fare": 8.43, "port": "Southampton", "survived": 0}, {"id": 654, "name": "O'Leary, Miss. Hanora \"Norah\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.83, "port": "Queenstown", "survived": 1}, {"id": 655, "name": "Hegarty, Miss. Hanora \"Nora\"", "pclass": 3, "sex": "female", "age": 18.0, "fare": 6.75, "port": "Queenstown", "survived": 0}, {"id": 656, "name": "Hickman, Mr. Leonard Mark", "pclass": 2, "sex": "male", "age": 24.0, "fare": 73.5, "port": "Southampton", "survived": 0}, {"id": 657, "name": "Radeff, Mr. Alexander", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 658, "name": "Bourke, Mrs. John (Catherine)", "pclass": 3, "sex": "female", "age": 32.0, "fare": 15.5, "port": "Queenstown", "survived": 0}, {"id": 659, "name": "Eitemiller, Mr. George Floyd", "pclass": 2, "sex": "male", "age": 23.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 660, "name": "Newell, Mr. Arthur Webster", "pclass": 1, "sex": "male", "age": 58.0, "fare": 113.28, "port": "Cherbourg", "survived": 0}, {"id": 661, "name": "Frauenthal, Dr. Henry William", "pclass": 1, "sex": "male", "age": 50.0, "fare": 133.65, "port": "Southampton", "survived": 1}, {"id": 662, "name": "Badt, Mr. Mohamed", "pclass": 3, "sex": "male", "age": 40.0, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 663, "name": "Colley, Mr. Edward Pomeroy", "pclass": 1, "sex": "male", "age": 47.0, "fare": 25.59, "port": "Southampton", "survived": 0}, {"id": 664, "name": "Coleff, Mr. Peju", "pclass": 3, "sex": "male", "age": 36.0, "fare": 7.5, "port": "Southampton", "survived": 0}, {"id": 665, "name": "Lindqvist, Mr. Eino William", "pclass": 3, "sex": "male", "age": 20.0, "fare": 7.92, "port": "Southampton", "survived": 1}, {"id": 666, "name": "Hickman, Mr. Lewis", "pclass": 2, "sex": "male", "age": 32.0, "fare": 73.5, "port": "Southampton", "survived": 0}, {"id": 667, "name": "Butler, Mr. Reginald Fenton", "pclass": 2, "sex": "male", "age": 25.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 668, "name": "Rommetvedt, Mr. Knud Paust", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 669, "name": "Cook, Mr. Jacob", "pclass": 3, "sex": "male", "age": 43.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 670, "name": "Taylor, Mrs. Elmer Zebley (Juliet Cummins Wright)", "pclass": 1, "sex": "female", "age": 29.7, "fare": 52.0, "port": "Southampton", "survived": 1}, {"id": 671, "name": "Brown, Mrs. Thomas William Solomon (Elizabeth Catherine Ford)", "pclass": 2, "sex": "female", "age": 40.0, "fare": 39.0, "port": "Southampton", "survived": 1}, {"id": 672, "name": "Davidson, Mr. Thornton", "pclass": 1, "sex": "male", "age": 31.0, "fare": 52.0, "port": "Southampton", "survived": 0}, {"id": 673, "name": "Mitchell, Mr. Henry Michael", "pclass": 2, "sex": "male", "age": 70.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 674, "name": "Wilhelms, Mr. Charles", "pclass": 2, "sex": "male", "age": 31.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 675, "name": "Watson, Mr. Ennis Hastings", "pclass": 2, "sex": "male", "age": 29.7, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 676, "name": "Edvardsson, Mr. Gustaf Hjalmar", "pclass": 3, "sex": "male", "age": 18.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 677, "name": "Sawyer, Mr. Frederick Charles", "pclass": 3, "sex": "male", "age": 24.5, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 678, "name": "Turja, Miss. Anna Sofia", "pclass": 3, "sex": "female", "age": 18.0, "fare": 9.84, "port": "Southampton", "survived": 1}, {"id": 679, "name": "Goodwin, Mrs. Frederick (Augusta Tyler)", "pclass": 3, "sex": "female", "age": 43.0, "fare": 46.9, "port": "Southampton", "survived": 0}, {"id": 680, "name": "Cardeza, Mr. Thomas Drake Martinez", "pclass": 1, "sex": "male", "age": 36.0, "fare": 512.33, "port": "Cherbourg", "survived": 1}, {"id": 681, "name": "Peters, Miss. Katie", "pclass": 3, "sex": "female", "age": 29.7, "fare": 8.14, "port": "Queenstown", "survived": 0}, {"id": 682, "name": "Hassab, Mr. Hammad", "pclass": 1, "sex": "male", "age": 27.0, "fare": 76.73, "port": "Cherbourg", "survived": 1}, {"id": 683, "name": "Olsvigen, Mr. Thor Anderson", "pclass": 3, "sex": "male", "age": 20.0, "fare": 9.22, "port": "Southampton", "survived": 0}, {"id": 684, "name": "Goodwin, Mr. Charles Edward", "pclass": 3, "sex": "male", "age": 14.0, "fare": 46.9, "port": "Southampton", "survived": 0}, {"id": 685, "name": "Brown, Mr. Thomas William Solomon", "pclass": 2, "sex": "male", "age": 60.0, "fare": 39.0, "port": "Southampton", "survived": 0}, {"id": 686, "name": "Laroche, Mr. Joseph Philippe Lemercier", "pclass": 2, "sex": "male", "age": 25.0, "fare": 41.58, "port": "Cherbourg", "survived": 0}, {"id": 687, "name": "Panula, Mr. Jaako Arnold", "pclass": 3, "sex": "male", "age": 14.0, "fare": 39.69, "port": "Southampton", "survived": 0}, {"id": 688, "name": "Dakic, Mr. Branko", "pclass": 3, "sex": "male", "age": 19.0, "fare": 10.17, "port": "Southampton", "survived": 0}, {"id": 689, "name": "Fischer, Mr. Eberhard Thelander", "pclass": 3, "sex": "male", "age": 18.0, "fare": 7.8, "port": "Southampton", "survived": 0}, {"id": 690, "name": "Madill, Miss. Georgette Alexandra", "pclass": 1, "sex": "female", "age": 15.0, "fare": 211.34, "port": "Southampton", "survived": 1}, {"id": 691, "name": "Dick, Mr. Albert Adrian", "pclass": 1, "sex": "male", "age": 31.0, "fare": 57.0, "port": "Southampton", "survived": 1}, {"id": 692, "name": "Karun, Miss. Manca", "pclass": 3, "sex": "female", "age": 4.0, "fare": 13.42, "port": "Cherbourg", "survived": 1}, {"id": 693, "name": "Lam, Mr. Ali", "pclass": 3, "sex": "male", "age": 29.7, "fare": 56.5, "port": "Southampton", "survived": 1}, {"id": 694, "name": "Saad, Mr. Khalil", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 695, "name": "Weir, Col. John", "pclass": 1, "sex": "male", "age": 60.0, "fare": 26.55, "port": "Southampton", "survived": 0}, {"id": 696, "name": "Chapman, Mr. Charles Henry", "pclass": 2, "sex": "male", "age": 52.0, "fare": 13.5, "port": "Southampton", "survived": 0}, {"id": 697, "name": "Kelly, Mr. James", "pclass": 3, "sex": "male", "age": 44.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 698, "name": "Mullens, Miss. Katherine \"Katie\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.73, "port": "Queenstown", "survived": 1}, {"id": 699, "name": "Thayer, Mr. John Borland", "pclass": 1, "sex": "male", "age": 49.0, "fare": 110.88, "port": "Cherbourg", "survived": 0}, {"id": 700, "name": "Humblen, Mr. Adolf Mathias Nicolai Olsen", "pclass": 3, "sex": "male", "age": 42.0, "fare": 7.65, "port": "Southampton", "survived": 0}, {"id": 701, "name": "Astor, Mrs. John Jacob (Madeleine Talmadge Force)", "pclass": 1, "sex": "female", "age": 18.0, "fare": 227.53, "port": "Cherbourg", "survived": 1}, {"id": 702, "name": "Silverthorne, Mr. Spencer Victor", "pclass": 1, "sex": "male", "age": 35.0, "fare": 26.29, "port": "Southampton", "survived": 1}, {"id": 703, "name": "Barbara, Miss. Saiide", "pclass": 3, "sex": "female", "age": 18.0, "fare": 14.45, "port": "Cherbourg", "survived": 0}, {"id": 704, "name": "Gallagher, Mr. Martin", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.74, "port": "Queenstown", "survived": 0}, {"id": 705, "name": "Hansen, Mr. Henrik Juul", "pclass": 3, "sex": "male", "age": 26.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 706, "name": "Morley, Mr. Henry Samuel (\"Mr Henry Marshall\")", "pclass": 2, "sex": "male", "age": 39.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 707, "name": "Kelly, Mrs. Florence \"Fannie\"", "pclass": 2, "sex": "female", "age": 45.0, "fare": 13.5, "port": "Southampton", "survived": 1}, {"id": 708, "name": "Calderhead, Mr. Edward Pennington", "pclass": 1, "sex": "male", "age": 42.0, "fare": 26.29, "port": "Southampton", "survived": 1}, {"id": 709, "name": "Cleaver, Miss. Alice", "pclass": 1, "sex": "female", "age": 22.0, "fare": 151.55, "port": "Southampton", "survived": 1}, {"id": 710, "name": "Moubarek, Master. Halim Gonios (\"William George\")", "pclass": 3, "sex": "male", "age": 29.7, "fare": 15.25, "port": "Cherbourg", "survived": 1}, {"id": 711, "name": "Mayne, Mlle. Berthe Antonine (\"Mrs de Villiers\")", "pclass": 1, "sex": "female", "age": 24.0, "fare": 49.5, "port": "Cherbourg", "survived": 1}, {"id": 712, "name": "Klaber, Mr. Herman", "pclass": 1, "sex": "male", "age": 29.7, "fare": 26.55, "port": "Southampton", "survived": 0}, {"id": 713, "name": "Taylor, Mr. Elmer Zebley", "pclass": 1, "sex": "male", "age": 48.0, "fare": 52.0, "port": "Southampton", "survived": 1}, {"id": 714, "name": "Larsson, Mr. August Viktor", "pclass": 3, "sex": "male", "age": 29.0, "fare": 9.48, "port": "Southampton", "survived": 0}, {"id": 715, "name": "Greenberg, Mr. Samuel", "pclass": 2, "sex": "male", "age": 52.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 716, "name": "Soholt, Mr. Peter Andreas Lauritz Andersen", "pclass": 3, "sex": "male", "age": 19.0, "fare": 7.65, "port": "Southampton", "survived": 0}, {"id": 717, "name": "Endres, Miss. Caroline Louise", "pclass": 1, "sex": "female", "age": 38.0, "fare": 227.53, "port": "Cherbourg", "survived": 1}, {"id": 718, "name": "Troutt, Miss. Edwina Celia \"Winnie\"", "pclass": 2, "sex": "female", "age": 27.0, "fare": 10.5, "port": "Southampton", "survived": 1}, {"id": 719, "name": "McEvoy, Mr. Michael", "pclass": 3, "sex": "male", "age": 29.7, "fare": 15.5, "port": "Queenstown", "survived": 0}, {"id": 720, "name": "Johnson, Mr. Malkolm Joackim", "pclass": 3, "sex": "male", "age": 33.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 721, "name": "Harper, Miss. Annie Jessie \"Nina\"", "pclass": 2, "sex": "female", "age": 6.0, "fare": 33.0, "port": "Southampton", "survived": 1}, {"id": 722, "name": "Jensen, Mr. Svend Lauritz", "pclass": 3, "sex": "male", "age": 17.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 723, "name": "Gillespie, Mr. William Henry", "pclass": 2, "sex": "male", "age": 34.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 724, "name": "Hodges, Mr. Henry Price", "pclass": 2, "sex": "male", "age": 50.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 725, "name": "Chambers, Mr. Norman Campbell", "pclass": 1, "sex": "male", "age": 27.0, "fare": 53.1, "port": "Southampton", "survived": 1}, {"id": 726, "name": "Oreskovic, Mr. Luka", "pclass": 3, "sex": "male", "age": 20.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 727, "name": "Renouf, Mrs. Peter Henry (Lillian Jefferys)", "pclass": 2, "sex": "female", "age": 30.0, "fare": 21.0, "port": "Southampton", "survived": 1}, {"id": 728, "name": "Mannion, Miss. Margareth", "pclass": 3, "sex": "female", "age": 29.7, "fare": 7.74, "port": "Queenstown", "survived": 1}, {"id": 729, "name": "Bryhl, Mr. Kurt Arnold Gottfrid", "pclass": 2, "sex": "male", "age": 25.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 730, "name": "Ilmakangas, Miss. Pieta Sofia", "pclass": 3, "sex": "female", "age": 25.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 731, "name": "Allen, Miss. Elisabeth Walton", "pclass": 1, "sex": "female", "age": 29.0, "fare": 211.34, "port": "Southampton", "survived": 1}, {"id": 732, "name": "Hassan, Mr. Houssein G N", "pclass": 3, "sex": "male", "age": 11.0, "fare": 18.79, "port": "Cherbourg", "survived": 0}, {"id": 733, "name": "Knight, Mr. Robert J", "pclass": 2, "sex": "male", "age": 29.7, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 734, "name": "Berriman, Mr. William John", "pclass": 2, "sex": "male", "age": 23.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 735, "name": "Troupiansky, Mr. Moses Aaron", "pclass": 2, "sex": "male", "age": 23.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 736, "name": "Williams, Mr. Leslie", "pclass": 3, "sex": "male", "age": 28.5, "fare": 16.1, "port": "Southampton", "survived": 0}, {"id": 737, "name": "Ford, Mrs. Edward (Margaret Ann Watson)", "pclass": 3, "sex": "female", "age": 48.0, "fare": 34.38, "port": "Southampton", "survived": 0}, {"id": 738, "name": "Lesurer, Mr. Gustave J", "pclass": 1, "sex": "male", "age": 35.0, "fare": 512.33, "port": "Cherbourg", "survived": 1}, {"id": 739, "name": "Ivanoff, Mr. Kanio", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 740, "name": "Nankoff, Mr. Minko", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 741, "name": "Hawksford, Mr. Walter James", "pclass": 1, "sex": "male", "age": 29.7, "fare": 30.0, "port": "Southampton", "survived": 1}, {"id": 742, "name": "Cavendish, Mr. Tyrell William", "pclass": 1, "sex": "male", "age": 36.0, "fare": 78.85, "port": "Southampton", "survived": 0}, {"id": 743, "name": "Ryerson, Miss. Susan Parker \"Suzette\"", "pclass": 1, "sex": "female", "age": 21.0, "fare": 262.38, "port": "Cherbourg", "survived": 1}, {"id": 744, "name": "McNamee, Mr. Neal", "pclass": 3, "sex": "male", "age": 24.0, "fare": 16.1, "port": "Southampton", "survived": 0}, {"id": 745, "name": "Stranden, Mr. Juho", "pclass": 3, "sex": "male", "age": 31.0, "fare": 7.92, "port": "Southampton", "survived": 1}, {"id": 746, "name": "Crosby, Capt. Edward Gifford", "pclass": 1, "sex": "male", "age": 70.0, "fare": 71.0, "port": "Southampton", "survived": 0}, {"id": 747, "name": "Abbott, Mr. Rossmore Edward", "pclass": 3, "sex": "male", "age": 16.0, "fare": 20.25, "port": "Southampton", "survived": 0}, {"id": 748, "name": "Sinkkonen, Miss. Anna", "pclass": 2, "sex": "female", "age": 30.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 749, "name": "Marvin, Mr. Daniel Warner", "pclass": 1, "sex": "male", "age": 19.0, "fare": 53.1, "port": "Southampton", "survived": 0}, {"id": 750, "name": "Connaghton, Mr. Michael", "pclass": 3, "sex": "male", "age": 31.0, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 751, "name": "Wells, Miss. Joan", "pclass": 2, "sex": "female", "age": 4.0, "fare": 23.0, "port": "Southampton", "survived": 1}, {"id": 752, "name": "Moor, Master. Meier", "pclass": 3, "sex": "male", "age": 6.0, "fare": 12.47, "port": "Southampton", "survived": 1}, {"id": 753, "name": "Vande Velde, Mr. Johannes Joseph", "pclass": 3, "sex": "male", "age": 33.0, "fare": 9.5, "port": "Southampton", "survived": 0}, {"id": 754, "name": "Jonkoff, Mr. Lalio", "pclass": 3, "sex": "male", "age": 23.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 755, "name": "Herman, Mrs. Samuel (Jane Laver)", "pclass": 2, "sex": "female", "age": 48.0, "fare": 65.0, "port": "Southampton", "survived": 1}, {"id": 756, "name": "Hamalainen, Master. Viljo", "pclass": 2, "sex": "male", "age": 0.7, "fare": 14.5, "port": "Southampton", "survived": 1}, {"id": 757, "name": "Carlsson, Mr. August Sigfrid", "pclass": 3, "sex": "male", "age": 28.0, "fare": 7.8, "port": "Southampton", "survived": 0}, {"id": 758, "name": "Bailey, Mr. Percy Andrew", "pclass": 2, "sex": "male", "age": 18.0, "fare": 11.5, "port": "Southampton", "survived": 0}, {"id": 759, "name": "Theobald, Mr. Thomas Leonard", "pclass": 3, "sex": "male", "age": 34.0, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 760, "name": "Rothes, the Countess. of (Lucy Noel Martha Dyer-Edwards)", "pclass": 1, "sex": "female", "age": 33.0, "fare": 86.5, "port": "Southampton", "survived": 1}, {"id": 761, "name": "Garfirth, Mr. John", "pclass": 3, "sex": "male", "age": 29.7, "fare": 14.5, "port": "Southampton", "survived": 0}, {"id": 762, "name": "Nirva, Mr. Iisakki Antino Aijo", "pclass": 3, "sex": "male", "age": 41.0, "fare": 7.12, "port": "Southampton", "survived": 0}, {"id": 763, "name": "Barah, Mr. Hanna Assi", "pclass": 3, "sex": "male", "age": 20.0, "fare": 7.23, "port": "Cherbourg", "survived": 1}, {"id": 764, "name": "Carter, Mrs. William Ernest (Lucile Polk)", "pclass": 1, "sex": "female", "age": 36.0, "fare": 120.0, "port": "Southampton", "survived": 1}, {"id": 765, "name": "Eklund, Mr. Hans Linus", "pclass": 3, "sex": "male", "age": 16.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 766, "name": "Hogeboom, Mrs. John C (Anna Andrews)", "pclass": 1, "sex": "female", "age": 51.0, "fare": 77.96, "port": "Southampton", "survived": 1}, {"id": 767, "name": "Brewe, Dr. Arthur Jackson", "pclass": 1, "sex": "male", "age": 29.7, "fare": 39.6, "port": "Cherbourg", "survived": 0}, {"id": 768, "name": "Mangan, Miss. Mary", "pclass": 3, "sex": "female", "age": 30.5, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 769, "name": "Moran, Mr. Daniel J", "pclass": 3, "sex": "male", "age": 29.7, "fare": 24.15, "port": "Queenstown", "survived": 0}, {"id": 770, "name": "Gronnestad, Mr. Daniel Danielsen", "pclass": 3, "sex": "male", "age": 32.0, "fare": 8.36, "port": "Southampton", "survived": 0}, {"id": 771, "name": "Lievens, Mr. Rene Aime", "pclass": 3, "sex": "male", "age": 24.0, "fare": 9.5, "port": "Southampton", "survived": 0}, {"id": 772, "name": "Jensen, Mr. Niels Peder", "pclass": 3, "sex": "male", "age": 48.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 773, "name": "Mack, Mrs. (Mary)", "pclass": 2, "sex": "female", "age": 57.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 774, "name": "Elias, Mr. Dibo", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.22, "port": "Cherbourg", "survived": 0}, {"id": 775, "name": "Hocking, Mrs. Elizabeth (Eliza Needs)", "pclass": 2, "sex": "female", "age": 54.0, "fare": 23.0, "port": "Southampton", "survived": 1}, {"id": 776, "name": "Myhrman, Mr. Pehr Fabian Oliver Malkolm", "pclass": 3, "sex": "male", "age": 18.0, "fare": 7.75, "port": "Southampton", "survived": 0}, {"id": 777, "name": "Tobin, Mr. Roger", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 778, "name": "Emanuel, Miss. Virginia Ethel", "pclass": 3, "sex": "female", "age": 5.0, "fare": 12.47, "port": "Southampton", "survived": 1}, {"id": 779, "name": "Kilgannon, Mr. Thomas J", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.74, "port": "Queenstown", "survived": 0}, {"id": 780, "name": "Robert, Mrs. Edward Scott (Elisabeth Walton McMillan)", "pclass": 1, "sex": "female", "age": 43.0, "fare": 211.34, "port": "Southampton", "survived": 1}, {"id": 781, "name": "Ayoub, Miss. Banoura", "pclass": 3, "sex": "female", "age": 13.0, "fare": 7.23, "port": "Cherbourg", "survived": 1}, {"id": 782, "name": "Dick, Mrs. Albert Adrian (Vera Gillespie)", "pclass": 1, "sex": "female", "age": 17.0, "fare": 57.0, "port": "Southampton", "survived": 1}, {"id": 783, "name": "Long, Mr. Milton Clyde", "pclass": 1, "sex": "male", "age": 29.0, "fare": 30.0, "port": "Southampton", "survived": 0}, {"id": 784, "name": "Johnston, Mr. Andrew G", "pclass": 3, "sex": "male", "age": 29.7, "fare": 23.45, "port": "Southampton", "survived": 0}, {"id": 785, "name": "Ali, Mr. William", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 786, "name": "Harmer, Mr. Abraham (David Lishin)", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.25, "port": "Southampton", "survived": 0}, {"id": 787, "name": "Sjoblom, Miss. Anna Sofia", "pclass": 3, "sex": "female", "age": 18.0, "fare": 7.5, "port": "Southampton", "survived": 1}, {"id": 788, "name": "Rice, Master. George Hugh", "pclass": 3, "sex": "male", "age": 8.0, "fare": 29.12, "port": "Queenstown", "survived": 0}, {"id": 789, "name": "Dean, Master. Bertram Vere", "pclass": 3, "sex": "male", "age": 1.0, "fare": 20.57, "port": "Southampton", "survived": 1}, {"id": 790, "name": "Guggenheim, Mr. Benjamin", "pclass": 1, "sex": "male", "age": 46.0, "fare": 79.2, "port": "Cherbourg", "survived": 0}, {"id": 791, "name": "Keane, Mr. Andrew \"Andy\"", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 0}, {"id": 792, "name": "Gaskell, Mr. Alfred", "pclass": 2, "sex": "male", "age": 16.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 793, "name": "Sage, Miss. Stella Anna", "pclass": 3, "sex": "female", "age": 29.7, "fare": 69.55, "port": "Southampton", "survived": 0}, {"id": 794, "name": "Hoyt, Mr. William Fisher", "pclass": 1, "sex": "male", "age": 29.7, "fare": 30.7, "port": "Cherbourg", "survived": 0}, {"id": 795, "name": "Dantcheff, Mr. Ristiu", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 796, "name": "Otter, Mr. Richard", "pclass": 2, "sex": "male", "age": 39.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 797, "name": "Leader, Dr. Alice (Farnham)", "pclass": 1, "sex": "female", "age": 49.0, "fare": 25.93, "port": "Southampton", "survived": 1}, {"id": 798, "name": "Osman, Mrs. Mara", "pclass": 3, "sex": "female", "age": 31.0, "fare": 8.68, "port": "Southampton", "survived": 1}, {"id": 799, "name": "Ibrahim Shawah, Mr. Yousseff", "pclass": 3, "sex": "male", "age": 30.0, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 800, "name": "Van Impe, Mrs. Jean Baptiste (Rosalie Paula Govaert)", "pclass": 3, "sex": "female", "age": 30.0, "fare": 24.15, "port": "Southampton", "survived": 0}, {"id": 801, "name": "Ponesell, Mr. Martin", "pclass": 2, "sex": "male", "age": 34.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 802, "name": "Collyer, Mrs. Harvey (Charlotte Annie Tate)", "pclass": 2, "sex": "female", "age": 31.0, "fare": 26.25, "port": "Southampton", "survived": 1}, {"id": 803, "name": "Carter, Master. William Thornton II", "pclass": 1, "sex": "male", "age": 11.0, "fare": 120.0, "port": "Southampton", "survived": 1}, {"id": 804, "name": "Thomas, Master. Assad Alexander", "pclass": 3, "sex": "male", "age": 0.4, "fare": 8.52, "port": "Cherbourg", "survived": 1}, {"id": 805, "name": "Hedman, Mr. Oskar Arvid", "pclass": 3, "sex": "male", "age": 27.0, "fare": 6.97, "port": "Southampton", "survived": 1}, {"id": 806, "name": "Johansson, Mr. Karl Johan", "pclass": 3, "sex": "male", "age": 31.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 807, "name": "Andrews, Mr. Thomas Jr", "pclass": 1, "sex": "male", "age": 39.0, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 808, "name": "Pettersson, Miss. Ellen Natalia", "pclass": 3, "sex": "female", "age": 18.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 809, "name": "Meyer, Mr. August", "pclass": 2, "sex": "male", "age": 39.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 810, "name": "Chambers, Mrs. Norman Campbell (Bertha Griggs)", "pclass": 1, "sex": "female", "age": 33.0, "fare": 53.1, "port": "Southampton", "survived": 1}, {"id": 811, "name": "Alexander, Mr. William", "pclass": 3, "sex": "male", "age": 26.0, "fare": 7.89, "port": "Southampton", "survived": 0}, {"id": 812, "name": "Lester, Mr. James", "pclass": 3, "sex": "male", "age": 39.0, "fare": 24.15, "port": "Southampton", "survived": 0}, {"id": 813, "name": "Slemen, Mr. Richard James", "pclass": 2, "sex": "male", "age": 35.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 814, "name": "Andersson, Miss. Ebba Iris Alfrida", "pclass": 3, "sex": "female", "age": 6.0, "fare": 31.27, "port": "Southampton", "survived": 0}, {"id": 815, "name": "Tomlin, Mr. Ernest Portage", "pclass": 3, "sex": "male", "age": 30.5, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 816, "name": "Fry, Mr. Richard", "pclass": 1, "sex": "male", "age": 29.7, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 817, "name": "Heininen, Miss. Wendla Maria", "pclass": 3, "sex": "female", "age": 23.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 818, "name": "Mallet, Mr. Albert", "pclass": 2, "sex": "male", "age": 31.0, "fare": 37.0, "port": "Cherbourg", "survived": 0}, {"id": 819, "name": "Holm, Mr. John Fredrik Alexander", "pclass": 3, "sex": "male", "age": 43.0, "fare": 6.45, "port": "Southampton", "survived": 0}, {"id": 820, "name": "Skoog, Master. Karl Thorsten", "pclass": 3, "sex": "male", "age": 10.0, "fare": 27.9, "port": "Southampton", "survived": 0}, {"id": 821, "name": "Hays, Mrs. Charles Melville (Clara Jennings Gregg)", "pclass": 1, "sex": "female", "age": 52.0, "fare": 93.5, "port": "Southampton", "survived": 1}, {"id": 822, "name": "Lulic, Mr. Nikola", "pclass": 3, "sex": "male", "age": 27.0, "fare": 8.66, "port": "Southampton", "survived": 1}, {"id": 823, "name": "Reuchlin, Jonkheer. John George", "pclass": 1, "sex": "male", "age": 38.0, "fare": 0.0, "port": "Southampton", "survived": 0}, {"id": 824, "name": "Moor, Mrs. (Beila)", "pclass": 3, "sex": "female", "age": 27.0, "fare": 12.47, "port": "Southampton", "survived": 1}, {"id": 825, "name": "Panula, Master. Urho Abraham", "pclass": 3, "sex": "male", "age": 2.0, "fare": 39.69, "port": "Southampton", "survived": 0}, {"id": 826, "name": "Flynn, Mr. John", "pclass": 3, "sex": "male", "age": 29.7, "fare": 6.95, "port": "Queenstown", "survived": 0}, {"id": 827, "name": "Lam, Mr. Len", "pclass": 3, "sex": "male", "age": 29.7, "fare": 56.5, "port": "Southampton", "survived": 0}, {"id": 828, "name": "Mallet, Master. Andre", "pclass": 2, "sex": "male", "age": 1.0, "fare": 37.0, "port": "Cherbourg", "survived": 1}, {"id": 829, "name": "McCormack, Mr. Thomas Joseph", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.75, "port": "Queenstown", "survived": 1}, {"id": 830, "name": "Stone, Mrs. George Nelson (Martha Evelyn)", "pclass": 1, "sex": "female", "age": 62.0, "fare": 80.0, "port": "Unknown", "survived": 1}, {"id": 831, "name": "Yasbeck, Mrs. Antoni (Selini Alexander)", "pclass": 3, "sex": "female", "age": 15.0, "fare": 14.45, "port": "Cherbourg", "survived": 1}, {"id": 832, "name": "Richards, Master. George Sibley", "pclass": 2, "sex": "male", "age": 0.8, "fare": 18.75, "port": "Southampton", "survived": 1}, {"id": 833, "name": "Saad, Mr. Amin", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 834, "name": "Augustsson, Mr. Albert", "pclass": 3, "sex": "male", "age": 23.0, "fare": 7.85, "port": "Southampton", "survived": 0}, {"id": 835, "name": "Allum, Mr. Owen George", "pclass": 3, "sex": "male", "age": 18.0, "fare": 8.3, "port": "Southampton", "survived": 0}, {"id": 836, "name": "Compton, Miss. Sara Rebecca", "pclass": 1, "sex": "female", "age": 39.0, "fare": 83.16, "port": "Cherbourg", "survived": 1}, {"id": 837, "name": "Pasic, Mr. Jakob", "pclass": 3, "sex": "male", "age": 21.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 838, "name": "Sirota, Mr. Maurice", "pclass": 3, "sex": "male", "age": 29.7, "fare": 8.05, "port": "Southampton", "survived": 0}, {"id": 839, "name": "Chip, Mr. Chang", "pclass": 3, "sex": "male", "age": 32.0, "fare": 56.5, "port": "Southampton", "survived": 1}, {"id": 840, "name": "Marechal, Mr. Pierre", "pclass": 1, "sex": "male", "age": 29.7, "fare": 29.7, "port": "Cherbourg", "survived": 1}, {"id": 841, "name": "Alhomaki, Mr. Ilmari Rudolf", "pclass": 3, "sex": "male", "age": 20.0, "fare": 7.92, "port": "Southampton", "survived": 0}, {"id": 842, "name": "Mudd, Mr. Thomas Charles", "pclass": 2, "sex": "male", "age": 16.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 843, "name": "Serepeca, Miss. Augusta", "pclass": 1, "sex": "female", "age": 30.0, "fare": 31.0, "port": "Cherbourg", "survived": 1}, {"id": 844, "name": "Lemberopolous, Mr. Peter L", "pclass": 3, "sex": "male", "age": 34.5, "fare": 6.44, "port": "Cherbourg", "survived": 0}, {"id": 845, "name": "Culumovic, Mr. Jeso", "pclass": 3, "sex": "male", "age": 17.0, "fare": 8.66, "port": "Southampton", "survived": 0}, {"id": 846, "name": "Abbing, Mr. Anthony", "pclass": 3, "sex": "male", "age": 42.0, "fare": 7.55, "port": "Southampton", "survived": 0}, {"id": 847, "name": "Sage, Mr. Douglas Bullen", "pclass": 3, "sex": "male", "age": 29.7, "fare": 69.55, "port": "Southampton", "survived": 0}, {"id": 848, "name": "Markoff, Mr. Marin", "pclass": 3, "sex": "male", "age": 35.0, "fare": 7.9, "port": "Cherbourg", "survived": 0}, {"id": 849, "name": "Harper, Rev. John", "pclass": 2, "sex": "male", "age": 28.0, "fare": 33.0, "port": "Southampton", "survived": 0}, {"id": 850, "name": "Goldenberg, Mrs. Samuel L (Edwiga Grabowska)", "pclass": 1, "sex": "female", "age": 29.7, "fare": 89.1, "port": "Cherbourg", "survived": 1}, {"id": 851, "name": "Andersson, Master. Sigvard Harald Elias", "pclass": 3, "sex": "male", "age": 4.0, "fare": 31.27, "port": "Southampton", "survived": 0}, {"id": 852, "name": "Svensson, Mr. Johan", "pclass": 3, "sex": "male", "age": 74.0, "fare": 7.78, "port": "Southampton", "survived": 0}, {"id": 853, "name": "Boulos, Miss. Nourelain", "pclass": 3, "sex": "female", "age": 9.0, "fare": 15.25, "port": "Cherbourg", "survived": 0}, {"id": 854, "name": "Lines, Miss. Mary Conover", "pclass": 1, "sex": "female", "age": 16.0, "fare": 39.4, "port": "Southampton", "survived": 1}, {"id": 855, "name": "Carter, Mrs. Ernest Courtenay (Lilian Hughes)", "pclass": 2, "sex": "female", "age": 44.0, "fare": 26.0, "port": "Southampton", "survived": 0}, {"id": 856, "name": "Aks, Mrs. Sam (Leah Rosen)", "pclass": 3, "sex": "female", "age": 18.0, "fare": 9.35, "port": "Southampton", "survived": 1}, {"id": 857, "name": "Wick, Mrs. George Dennick (Mary Hitchcock)", "pclass": 1, "sex": "female", "age": 45.0, "fare": 164.87, "port": "Southampton", "survived": 1}, {"id": 858, "name": "Daly, Mr. Peter Denis ", "pclass": 1, "sex": "male", "age": 51.0, "fare": 26.55, "port": "Southampton", "survived": 1}, {"id": 859, "name": "Baclini, Mrs. Solomon (Latifa Qurban)", "pclass": 3, "sex": "female", "age": 24.0, "fare": 19.26, "port": "Cherbourg", "survived": 1}, {"id": 860, "name": "Razi, Mr. Raihed", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.23, "port": "Cherbourg", "survived": 0}, {"id": 861, "name": "Hansen, Mr. Claus Peter", "pclass": 3, "sex": "male", "age": 41.0, "fare": 14.11, "port": "Southampton", "survived": 0}, {"id": 862, "name": "Giles, Mr. Frederick Edward", "pclass": 2, "sex": "male", "age": 21.0, "fare": 11.5, "port": "Southampton", "survived": 0}, {"id": 863, "name": "Swift, Mrs. Frederick Joel (Margaret Welles Barron)", "pclass": 1, "sex": "female", "age": 48.0, "fare": 25.93, "port": "Southampton", "survived": 1}, {"id": 864, "name": "Sage, Miss. Dorothy Edith \"Dolly\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 69.55, "port": "Southampton", "survived": 0}, {"id": 865, "name": "Gill, Mr. John William", "pclass": 2, "sex": "male", "age": 24.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 866, "name": "Bystrom, Mrs. (Karolina)", "pclass": 2, "sex": "female", "age": 42.0, "fare": 13.0, "port": "Southampton", "survived": 1}, {"id": 867, "name": "Duran y More, Miss. Asuncion", "pclass": 2, "sex": "female", "age": 27.0, "fare": 13.86, "port": "Cherbourg", "survived": 1}, {"id": 868, "name": "Roebling, Mr. Washington Augustus II", "pclass": 1, "sex": "male", "age": 31.0, "fare": 50.5, "port": "Southampton", "survived": 0}, {"id": 869, "name": "van Melkebeke, Mr. Philemon", "pclass": 3, "sex": "male", "age": 29.7, "fare": 9.5, "port": "Southampton", "survived": 0}, {"id": 870, "name": "Johnson, Master. Harold Theodor", "pclass": 3, "sex": "male", "age": 4.0, "fare": 11.13, "port": "Southampton", "survived": 1}, {"id": 871, "name": "Balkic, Mr. Cerin", "pclass": 3, "sex": "male", "age": 26.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 872, "name": "Beckwith, Mrs. Richard Leonard (Sallie Monypeny)", "pclass": 1, "sex": "female", "age": 47.0, "fare": 52.55, "port": "Southampton", "survived": 1}, {"id": 873, "name": "Carlsson, Mr. Frans Olof", "pclass": 1, "sex": "male", "age": 33.0, "fare": 5.0, "port": "Southampton", "survived": 0}, {"id": 874, "name": "Vander Cruyssen, Mr. Victor", "pclass": 3, "sex": "male", "age": 47.0, "fare": 9.0, "port": "Southampton", "survived": 0}, {"id": 875, "name": "Abelson, Mrs. Samuel (Hannah Wizosky)", "pclass": 2, "sex": "female", "age": 28.0, "fare": 24.0, "port": "Cherbourg", "survived": 1}, {"id": 876, "name": "Najib, Miss. Adele Kiamie \"Jane\"", "pclass": 3, "sex": "female", "age": 15.0, "fare": 7.22, "port": "Cherbourg", "survived": 1}, {"id": 877, "name": "Gustafsson, Mr. Alfred Ossian", "pclass": 3, "sex": "male", "age": 20.0, "fare": 9.85, "port": "Southampton", "survived": 0}, {"id": 878, "name": "Petroff, Mr. Nedelio", "pclass": 3, "sex": "male", "age": 19.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 879, "name": "Laleff, Mr. Kristo", "pclass": 3, "sex": "male", "age": 29.7, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 880, "name": "Potter, Mrs. Thomas Jr (Lily Alexenia Wilson)", "pclass": 1, "sex": "female", "age": 56.0, "fare": 83.16, "port": "Cherbourg", "survived": 1}, {"id": 881, "name": "Shelley, Mrs. William (Imanita Parrish Hall)", "pclass": 2, "sex": "female", "age": 25.0, "fare": 26.0, "port": "Southampton", "survived": 1}, {"id": 882, "name": "Markun, Mr. Johann", "pclass": 3, "sex": "male", "age": 33.0, "fare": 7.9, "port": "Southampton", "survived": 0}, {"id": 883, "name": "Dahlberg, Miss. Gerda Ulrika", "pclass": 3, "sex": "female", "age": 22.0, "fare": 10.52, "port": "Southampton", "survived": 0}, {"id": 884, "name": "Banfield, Mr. Frederick James", "pclass": 2, "sex": "male", "age": 28.0, "fare": 10.5, "port": "Southampton", "survived": 0}, {"id": 885, "name": "Sutehall, Mr. Henry Jr", "pclass": 3, "sex": "male", "age": 25.0, "fare": 7.05, "port": "Southampton", "survived": 0}, {"id": 886, "name": "Rice, Mrs. William (Margaret Norton)", "pclass": 3, "sex": "female", "age": 39.0, "fare": 29.12, "port": "Queenstown", "survived": 0}, {"id": 887, "name": "Montvila, Rev. Juozas", "pclass": 2, "sex": "male", "age": 27.0, "fare": 13.0, "port": "Southampton", "survived": 0}, {"id": 888, "name": "Graham, Miss. Margaret Edith", "pclass": 1, "sex": "female", "age": 19.0, "fare": 30.0, "port": "Southampton", "survived": 1}, {"id": 889, "name": "Johnston, Miss. Catherine Helen \"Carrie\"", "pclass": 3, "sex": "female", "age": 29.7, "fare": 23.45, "port": "Southampton", "survived": 0}, {"id": 890, "name": "Behr, Mr. Karl Howell", "pclass": 1, "sex": "male", "age": 26.0, "fare": 30.0, "port": "Cherbourg", "survived": 1}, {"id": 891, "name": "Dooley, Mr. Patrick", "pclass": 3, "sex": "male", "age": 32.0, "fare": 7.75, "port": "Queenstown", "survived": 0}]</script>
+<script>
+  const passengers = JSON.parse(document.getElementById('passengerData').textContent);
+</script>
+
+<!-- ============ CHARTS ============ -->
+<section style="background:var(--ivory-dim);">
+  <div class="section-head fade-up">
+    <span class="section-num">05</span>
+    <div>
+      <h2 class="section-title">Reading the Numbers</h2>
+      <p class="section-sub">The same manifest, plotted five ways — all drawn live from the 891 passenger records above.</p>
+    </div>
+  </div>
+
+  <div class="chart-grid fade-up">
+
+    <!-- BAR CHART: survived vs lost per class -->
+    <div class="chart-card">
+      <div class="chart-heading">Survived vs. Lost, by Class</div>
+      <div class="chart-note">Grouped bar chart · counts of passengers</div>
+      <div class="chart-wrap">
+        <svg id="barChart" viewBox="0 0 380 260" width="100%"></svg>
+      </div>
+      <div class="chart-legend">
+        <span><span class="legend-dot" style="background:#C9A961;"></span>Survived</span>
+        <span><span class="legend-dot" style="background:#6B2C3E;"></span>Lost</span>
+      </div>
+    </div>
+
+    <!-- PIE CHART: port distribution -->
+    <div class="chart-card">
+      <div class="chart-heading">Passengers by Port of Embarkation</div>
+      <div class="chart-note">Pie chart · share of 891 total</div>
+      <div class="chart-wrap">
+        <svg id="pieChart" viewBox="0 0 380 260" width="100%"></svg>
+      </div>
+      <div class="chart-legend" id="pieLegend"></div>
+    </div>
+
+    <!-- HISTOGRAM: age distribution stacked by outcome -->
+    <div class="chart-card">
+      <div class="chart-heading">Age Distribution</div>
+      <div class="chart-note">Histogram · 10-year bins, stacked by outcome</div>
+      <div class="chart-wrap">
+        <svg id="histChart" viewBox="0 0 380 260" width="100%"></svg>
+      </div>
+      <div class="chart-legend">
+        <span><span class="legend-dot" style="background:#C9A961;"></span>Survived</span>
+        <span><span class="legend-dot" style="background:#6B2C3E;"></span>Lost</span>
+      </div>
+    </div>
+
+    <!-- LINE CHART: survival rate by age group -->
+    <div class="chart-card">
+      <div class="chart-heading">Survival Rate by Age Group</div>
+      <div class="chart-note">Line chart · % survived within each bracket</div>
+      <div class="chart-wrap">
+        <svg id="lineChart" viewBox="0 0 380 260" width="100%"></svg>
+      </div>
+    </div>
+
+    <!-- SCATTER PLOT: age vs fare -->
+    <div class="chart-card wide">
+      <div class="chart-heading">Age vs. Fare Paid, All 891 Passengers</div>
+      <div class="chart-note">Scatter plot · fare axis uses a square-root scale so lower fares stay readable</div>
+      <div class="chart-wrap">
+        <svg id="scatterChart" viewBox="0 0 780 320" width="100%"></svg>
+      </div>
+      <div class="chart-legend">
+        <span><span class="legend-dot" style="background:#C9A961;"></span>Survived</span>
+        <span><span class="legend-dot" style="background:#6B2C3E;"></span>Lost</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="chart-tooltip" id="chartTooltip"></div>
+</section>
+
+<script>
+(function(){
+  const GOLD = '#C9A961', OX = '#6B2C3E', navy = '#0A1522';
+  const tooltip = document.getElementById('chartTooltip');
+
+  function showTip(evt, html){
+    tooltip.innerHTML = html;
+    tooltip.style.opacity = 1;
+    tooltip.style.left = (evt.pageX + 14) + 'px';
+    tooltip.style.top = (evt.pageY - 36) + 'px';
+  }
+  function hideTip(){ tooltip.style.opacity = 0; }
+
+  function svgEl(tag, attrs){
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  // ---------- BAR CHART: survived vs lost per class ----------
+  (function(){
+    const svg = document.getElementById('barChart');
+    const classData = {};
+    passengers.forEach(p => {
+      classData[p.pclass] = classData[p.pclass] || {survived:0, lost:0};
+      classData[p.pclass][p.survived ? 'survived':'lost']++;
+    });
+    const classes = [1,2,3];
+    const W=380, H=260, padL=40, padB=34, padT=14, padR=10;
+    const chartW = W-padL-padR, chartH = H-padT-padB;
+    const maxV = 400;
+    const groupW = chartW/classes.length;
+    const barW = groupW*0.32;
+
+    // gridlines
+    [0,100,200,300,400].forEach(v=>{
+      const y = padT + chartH - (v/maxV)*chartH;
+      svg.appendChild(svgEl('line', {x1:padL,y1:y,x2:W-padR,y2:y,class:'grid-line'}));
+      const t = svgEl('text', {x:padL-8,y:y+4,'text-anchor':'end',class:'axis-label'});
+      t.textContent = v; svg.appendChild(t);
+    });
+
+    classes.forEach((c,i) => {
+      const cx = padL + groupW*i + groupW/2;
+      const d = classData[c];
+      ['survived','lost'].forEach((k,j)=>{
+        const v = d[k];
+        const h = (v/maxV)*chartH;
+        const x = cx - barW - 4 + j*(barW+8);
+        const y = padT + chartH - h;
+        const rect = svgEl('rect', {x, y, width:barW, height:h, fill: k==='survived'?GOLD:OX, rx:2, class:'bar-rect'});
+        rect.addEventListener('mousemove', e=>showTip(e, `<b>${k==='survived'?'Survived':'Lost'}</b>, ${c==1?'1st':c==2?'2nd':'3rd'} class: ${v}`));
+        rect.addEventListener('mouseleave', hideTip);
+        svg.appendChild(rect);
+      });
+      const lbl = svgEl('text', {x:cx, y:H-10, 'text-anchor':'middle', class:'axis-label'});
+      lbl.textContent = (c==1?'1st':c==2?'2nd':'3rd') + ' Class';
+      svg.appendChild(lbl);
+    });
+  })();
+
+  // ---------- PIE CHART: port distribution ----------
+  (function(){
+    const svg = document.getElementById('pieChart');
+    const counts = {};
+    passengers.forEach(p => { counts[p.port] = (counts[p.port]||0)+1; });
+    const order = ['Southampton','Cherbourg','Queenstown','Unknown'];
+    const colors = {'Southampton':'#8C6D3F','Cherbourg':'#C9A961','Queenstown':'#B08B4F','Unknown':'#6B2C3E'};
+    const total = passengers.length;
+    const cx=140, cy=130, r=95;
+    let angle = -Math.PI/2;
+    const legend = document.getElementById('pieLegend');
+    legend.innerHTML='';
+    order.forEach(port=>{
+      const v = counts[port]||0;
+      if (v===0) return;
+      const frac = v/total;
+      const a2 = angle + frac*2*Math.PI;
+      const x1 = cx + r*Math.cos(angle), y1 = cy + r*Math.sin(angle);
+      const x2 = cx + r*Math.cos(a2), y2 = cy + r*Math.sin(a2);
+      const large = frac > 0.5 ? 1 : 0;
+      const path = svgEl('path', {
+        d:`M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z`,
+        fill: colors[port], stroke: '#F6F1E4', 'stroke-width':2, class:'bar-rect'
+      });
+      path.addEventListener('mousemove', e=>showTip(e, `<b>${port}</b>: ${v} (${(frac*100).toFixed(1)}%)`));
+      path.addEventListener('mouseleave', hideTip);
+      svg.appendChild(path);
+      angle = a2;
+
+      const li = document.createElement('span');
+      li.innerHTML = `<span class="legend-dot" style="background:${colors[port]};"></span>${port} — ${v}`;
+      legend.appendChild(li);
+    });
+  })();
+
+  // ---------- HISTOGRAM: age distribution stacked ----------
+  (function(){
+    const svg = document.getElementById('histChart');
+    const bins = [[0,10],[10,20],[20,30],[30,40],[40,50],[50,60],[60,70],[70,80],[80,91]];
+    const labels = ['0-9','10-19','20-29','30-39','40-49','50-59','60-69','70-79','80+'];
+    const counts = bins.map(()=>({survived:0, lost:0}));
+    passengers.forEach(p=>{
+      for (let i=0;i<bins.length;i++){
+        if (p.age >= bins[i][0] && p.age < bins[i][1]){
+          counts[i][p.survived?'survived':'lost']++;
+          break;
+        }
+      }
+    });
+    const W=380,H=260, padL=34, padB=34, padT=14, padR=8;
+    const chartW=W-padL-padR, chartH=H-padT-padB;
+    const maxV = 270;
+    const bw = chartW/bins.length;
+    [0,100,200].forEach(v=>{
+      const y = padT + chartH - (v/maxV)*chartH;
+      svg.appendChild(svgEl('line', {x1:padL,y1:y,x2:W-padR,y2:y,class:'grid-line'}));
+      const t = svgEl('text', {x:padL-6,y:y+4,'text-anchor':'end',class:'axis-label'});
+      t.textContent=v; svg.appendChild(t);
+    });
+    counts.forEach((c,i)=>{
+      const x = padL + bw*i + bw*0.15;
+      const barW = bw*0.7;
+      const hLost = (c.lost/maxV)*chartH;
+      const hSurv = (c.survived/maxV)*chartH;
+      const yLost = padT + chartH - hLost;
+      const rectLost = svgEl('rect', {x,y:yLost,width:barW,height:hLost,fill:OX,class:'bar-rect'});
+      rectLost.addEventListener('mousemove', e=>showTip(e, `<b>${labels[i]} yrs</b><br>Lost: ${c.lost}`));
+      rectLost.addEventListener('mouseleave', hideTip);
+      svg.appendChild(rectLost);
+      const ySurv = yLost - hSurv;
+      const rectSurv = svgEl('rect', {x,y:ySurv,width:barW,height:hSurv,fill:GOLD,class:'bar-rect'});
+      rectSurv.addEventListener('mousemove', e=>showTip(e, `<b>${labels[i]} yrs</b><br>Survived: ${c.survived}`));
+      rectSurv.addEventListener('mouseleave', hideTip);
+      svg.appendChild(rectSurv);
+      if (i%2===0){
+        const lbl = svgEl('text', {x:x+barW/2, y:H-10, 'text-anchor':'middle', class:'axis-label'});
+        lbl.textContent = labels[i];
+        svg.appendChild(lbl);
+      }
+    });
+  })();
+
+  // ---------- LINE CHART: survival rate by age group ----------
+  (function(){
+    const svg = document.getElementById('lineChart');
+    const bins = [[0,10],[10,20],[20,30],[30,40],[40,50],[50,60],[60,70],[70,80],[80,91]];
+    const labels = ['0-9','10-19','20-29','30-39','40-49','50-59','60-69','70-79','80+'];
+    const counts = bins.map(()=>({survived:0, total:0}));
+    passengers.forEach(p=>{
+      for (let i=0;i<bins.length;i++){
+        if (p.age >= bins[i][0] && p.age < bins[i][1]){
+          counts[i].total++;
+          if (p.survived) counts[i].survived++;
+          break;
+        }
+      }
+    });
+    const rates = counts.map(c => c.total ? (c.survived/c.total*100) : 0);
+    const W=380,H=260, padL=34, padB=34, padT=14, padR=8;
+    const chartW=W-padL-padR, chartH=H-padT-padB;
+    [0,25,50,75,100].forEach(v=>{
+      const y = padT + chartH - (v/100)*chartH;
+      svg.appendChild(svgEl('line', {x1:padL,y1:y,x2:W-padR,y2:y,class:'grid-line'}));
+      const t = svgEl('text', {x:padL-6,y:y+4,'text-anchor':'end',class:'axis-label'});
+      t.textContent=v+'%'; svg.appendChild(t);
+    });
+    const step = chartW/(labels.length-1);
+    const pts = rates.map((r,i)=>[padL+step*i, padT+chartH-(r/100)*chartH]);
+    const path = svgEl('path', {d:'M'+pts.map(p=>p.join(',')).join(' L'), fill:'none', stroke:GOLD, 'stroke-width':2.5});
+    svg.appendChild(path);
+    pts.forEach((p,i)=>{
+      const dot = svgEl('circle', {cx:p[0],cy:p[1],r:4.5,fill:navy,stroke:GOLD,'stroke-width':2,class:'scatter-dot'});
+      dot.addEventListener('mousemove', e=>showTip(e, `<b>${labels[i]} yrs</b><br>${rates[i].toFixed(1)}% survived (n=${counts[i].total})`));
+      dot.addEventListener('mouseleave', hideTip);
+      svg.appendChild(dot);
+      if (i%2===0){
+        const lbl = svgEl('text', {x:p[0], y:H-10, 'text-anchor':'middle', class:'axis-label'});
+        lbl.textContent = labels[i];
+        svg.appendChild(lbl);
+      }
+    });
+  })();
+
+  // ---------- SCATTER: age vs fare ----------
+  (function(){
+    const svg = document.getElementById('scatterChart');
+    const W=780,H=320, padL=54, padB=40, padT=16, padR=16;
+    const chartW=W-padL-padR, chartH=H-padT-padB;
+    const maxAge = 82, maxFareSqrt = Math.sqrt(520);
+
+    // gridlines + axis labels (fare, sqrt scale)
+    [0,50,100,200,300,520].forEach(v=>{
+      const y = padT + chartH - (Math.sqrt(v)/maxFareSqrt)*chartH;
+      svg.appendChild(svgEl('line', {x1:padL,y1:y,x2:W-padR,y2:y,class:'grid-line'}));
+      const t = svgEl('text', {x:padL-8,y:y+4,'text-anchor':'end',class:'axis-label'});
+      t.textContent = '£'+v; svg.appendChild(t);
+    });
+    [0,20,40,60,80].forEach(v=>{
+      const x = padL + (v/maxAge)*chartW;
+      const t = svgEl('text', {x, y:H-14, 'text-anchor':'middle', class:'axis-label'});
+      t.textContent = v; svg.appendChild(t);
+    });
+    const axisLabelX = svgEl('text', {x:W/2, y:H-1, 'text-anchor':'middle', class:'axis-label'});
+    axisLabelX.textContent = 'Age (years)';
+    svg.appendChild(axisLabelX);
+
+    passengers.forEach(p=>{
+      const x = padL + (p.age/maxAge)*chartW;
+      const y = padT + chartH - (Math.sqrt(p.fare)/maxFareSqrt)*chartH;
+      const dot = svgEl('circle', {cx:x,cy:y,r:3,fill:p.survived?GOLD:OX,'fill-opacity':0.65,class:'scatter-dot'});
+      dot.addEventListener('mousemove', e=>showTip(e, `<b>${p.name.split(',')[0]}</b><br>Age ${p.age}, Fare £${p.fare.toFixed(2)}<br>${p.survived?'Survived':'Lost'}`));
+      dot.addEventListener('mouseleave', hideTip);
+      svg.appendChild(dot);
+    });
+  })();
+})();
+</script>
+
+<!-- ============ OVERALL OUTCOME TABLE ============ -->
+<section>
+  <div class="section-head fade-up">
+    <span class="section-num">06</span>
+    <div>
+      <h2 class="section-title">The Full Manifest, at a Glance</h2>
+      <p class="section-sub">Every group above, side by side.</p>
+    </div>
+  </div>
+  <table class="manifest-table fade-up">
+    <thead>
+      <tr><th>Group</th><th>Total</th><th>Survived</th><th style="width:40%;">Survival Rate</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>First Class</td><td>216</td><td>136</td><td><div class="bar-bg"><div class="bar-fill" data-pct="63"></div></div></td></tr>
+      <tr><td>Second Class</td><td>184</td><td>87</td><td><div class="bar-bg"><div class="bar-fill" data-pct="47.3"></div></div></td></tr>
+      <tr><td>Third Class</td><td>491</td><td>119</td><td><div class="bar-bg"><div class="bar-fill" data-pct="24.2"></div></div></td></tr>
+      <tr><td>Female</td><td>314</td><td>233</td><td><div class="bar-bg"><div class="bar-fill" data-pct="74.2"></div></div></td></tr>
+      <tr><td>Male</td><td>577</td><td>109</td><td><div class="bar-bg"><div class="bar-fill" data-pct="18.9"></div></div></td></tr>
+      <tr><td>Southampton</td><td>644</td><td>217</td><td><div class="bar-bg"><div class="bar-fill" data-pct="33.7"></div></div></td></tr>
+      <tr><td>Cherbourg</td><td>168</td><td>93</td><td><div class="bar-bg"><div class="bar-fill" data-pct="55.4"></div></div></td></tr>
+      <tr><td>Queenstown</td><td>77</td><td>30</td><td><div class="bar-bg"><div class="bar-fill" data-pct="39.0"></div></div></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ PASSENGER LEDGER (filterable table) ============ -->
+<section>
+  <div class="section-head fade-up">
+    <span class="section-num">07</span>
+    <div>
+      <h2 class="section-title">The Passenger Ledger</h2>
+      <p class="section-sub">Every name in the manifest. Filter by class, sex, or outcome to see who was aboard.</p>
+    </div>
+  </div>
+
+  <div class="ledger fade-up">
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Ticket Class</span>
+        <div class="pill-row" id="classFilters">
+          <div class="pill active" data-filter="class" data-value="all">All</div>
+          <div class="pill" data-filter="class" data-value="1">1st</div>
+          <div class="pill" data-filter="class" data-value="2">2nd</div>
+          <div class="pill" data-filter="class" data-value="3">3rd</div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Sex</span>
+        <div class="pill-row" id="sexFilters">
+          <div class="pill active" data-filter="sex" data-value="all">All</div>
+          <div class="pill" data-filter="sex" data-value="male">Male</div>
+          <div class="pill" data-filter="sex" data-value="female">Female</div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Outcome</span>
+        <div class="pill-row" id="outcomeFilters">
+          <div class="pill active" data-filter="outcome" data-value="all">All</div>
+          <div class="pill" data-filter="outcome" data-value="1">Survived</div>
+          <div class="pill" data-filter="outcome" data-value="0">Lost</div>
+        </div>
+      </div>
+      <button class="reset-btn" id="resetBtn">↺ Reset Filters</button>
+    </div>
+
+    <div class="result-count" id="resultCount">Showing <b>891</b> of <b>891</b> passengers</div>
+
+    <div class="table-scroll">
+      <table class="ledger-table">
+        <thead>
+          <tr>
+            <th data-sort="id">#<span class="arrow">▲▼</span></th>
+            <th data-sort="name">Name<span class="arrow">▲▼</span></th>
+            <th data-sort="pclass">Class<span class="arrow">▲▼</span></th>
+            <th data-sort="sex">Sex<span class="arrow">▲▼</span></th>
+            <th data-sort="age">Age<span class="arrow">▲▼</span></th>
+            <th data-sort="fare">Fare<span class="arrow">▲▼</span></th>
+            <th data-sort="port">Port<span class="arrow">▲▼</span></th>
+            <th data-sort="survived">Outcome<span class="arrow">▲▼</span></th>
+          </tr>
+        </thead>
+        <tbody id="ledgerBody"></tbody>
+      </table>
+      <div class="no-results" id="noResults" style="display:none;">No passengers match these filters.</div>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+  </div>
+</section>
+
+<footer>
+  RMS TITANIC &nbsp;<span>·</span>&nbsp; 891 PASSENGERS RECORDED &nbsp;<span>·</span>&nbsp; DATASET VISUALIZATION
+</footer>
+
+
+<script>
+
+  const state = {
+    class: 'all',
+    sex: 'all',
+    outcome: 'all',
+    sortKey: 'id',
+    sortDir: 1,
+    page: 1,
+    pageSize: 15
+  };
+
+  function applyFilters(){
+    return passengers.filter(p => {
+      if (state.class !== 'all' && String(p.pclass) !== state.class) return false;
+      if (state.sex !== 'all' && p.sex !== state.sex) return false;
+      if (state.outcome !== 'all' && String(p.survived) !== state.outcome) return false;
+      return true;
+    });
+  }
+
+  function sortRows(rows){
+    const key = state.sortKey, dir = state.sortDir;
+    return [...rows].sort((a,b) => {
+      let av = a[key], bv = b[key];
+      if (typeof av === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+      if (av < bv) return -1*dir;
+      if (av > bv) return 1*dir;
+      return 0;
+    });
+  }
+
+  function render(){
+    let rows = applyFilters();
+    rows = sortRows(rows);
+
+    document.getElementById('resultCount').innerHTML =
+      `Showing <b>${rows.length}</b> of <b>891</b> passengers`;
+
+    const totalPages = Math.max(1, Math.ceil(rows.length / state.pageSize));
+    if (state.page > totalPages) state.page = totalPages;
+    const start = (state.page-1) * state.pageSize;
+    const pageRows = rows.slice(start, start + state.pageSize);
+
+    const tbody = document.getElementById('ledgerBody');
+    const noResults = document.getElementById('noResults');
+
+    if (pageRows.length === 0){
+      tbody.innerHTML = '';
+      noResults.style.display = 'block';
+    } else {
+      noResults.style.display = 'none';
+      tbody.innerHTML = pageRows.map(p => `
+        <tr>
+          <td>${p.id}</td>
+          <td class="name-cell">${p.name}</td>
+          <td>${p.pclass === 1 ? '1st' : p.pclass === 2 ? '2nd' : '3rd'}</td>
+          <td>${p.sex === 'male' ? 'Male' : 'Female'}</td>
+          <td>${p.age}</td>
+          <td>£${p.fare.toFixed(2)}</td>
+          <td>${p.port}</td>
+          <td><span class="tag ${p.survived ? 'survived' : 'lost'}">${p.survived ? 'Survived' : 'Lost'}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // pagination controls
+    const pag = document.getElementById('pagination');
+    pag.innerHTML = `
+      <button class="page-btn" id="prevPage" ${state.page===1 ? 'disabled' : ''}>‹ Prev</button>
+      <span>Page ${state.page} of ${totalPages}</span>
+      <button class="page-btn" id="nextPage" ${state.page===totalPages ? 'disabled' : ''}>Next ›</button>
+    `;
+    document.getElementById('prevPage').onclick = () => { state.page--; render(); };
+    document.getElementById('nextPage').onclick = () => { state.page++; render(); };
+
+    // sort header indicator
+    document.querySelectorAll('.ledger-table thead th').forEach(th => {
+      th.classList.toggle('sorted', th.dataset.sort === state.sortKey);
+      const arrow = th.querySelector('.arrow');
+      if (th.dataset.sort === state.sortKey){
+        arrow.textContent = state.sortDir === 1 ? '▲' : '▼';
+      } else {
+        arrow.textContent = '▲▼';
+      }
+    });
+  }
+
+  // pill click handlers
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const filter = pill.dataset.filter;
+      const value = pill.dataset.value;
+      state[filter] = value;
+      state.page = 1;
+      document.querySelectorAll(`.pill[data-filter="${filter}"]`).forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      render();
+    });
+  });
+
+  // reset button
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.class = 'all'; state.sex = 'all'; state.outcome = 'all';
+    state.sortKey = 'id'; state.sortDir = 1; state.page = 1;
+    document.querySelectorAll('.pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.value === 'all');
+    });
+    render();
+  });
+
+  // sortable headers
+  document.querySelectorAll('.ledger-table thead th').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      if (state.sortKey === key){
+        state.sortDir *= -1;
+      } else {
+        state.sortKey = key;
+        state.sortDir = 1;
+      }
+      render();
+    });
+  });
+
+  render();
+</script>
+
+<script>
+  // animate hero ring
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => {
+      document.getElementById('heroRing').style.strokeDashoffset = (691.15 - 265.4);
+      document.querySelectorAll('.ring-progress.mini').forEach(el => {
+        const arc = parseFloat(el.getAttribute('data-arc'));
+        const dash = parseFloat(el.getAttribute('stroke-dasharray'));
+        el.style.strokeDashoffset = (dash - arc);
+      });
+      document.querySelectorAll('.bar-fill').forEach(el => {
+        el.style.width = el.getAttribute('data-pct') + '%';
+      });
+    });
+  });
+
+  // scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
